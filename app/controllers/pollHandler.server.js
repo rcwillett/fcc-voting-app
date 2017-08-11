@@ -13,7 +13,7 @@ function PollHandler () {
 	};
 	
 	this.getPolls = function(req, res){
-	    Poll.find().limit(req.params.numItems).then(function(err, results){
+	    Poll.find().limit(req.params.numItems).exec(function(err, results){
 	        if(!err)
 	            res.json(results);
 	    });

@@ -1,7 +1,9 @@
 'use strict';
 
+var BodyParser = require("body-parser");
 var path = process.cwd();
 var ClickHandler = require(path + '/app/controllers/clickHandler.server.js');
+var pollHandler = require(path + '/app/controllers/pollHandler.server.js');
 
 module.exports = function (app, passport) {
 
@@ -49,9 +51,12 @@ module.exports = function (app, passport) {
 			successRedirect: '/',
 			failureRedirect: '/login'
 		}));
+		
+	app.route('/polls')
+		.get(pollHandler.getPolls);
 
-	app.route('/api/:id/clicks')
-		.get(isLoggedIn, clickHandler.getClicks)
-		.post(isLoggedIn, clickHandler.addClick)
-		.delete(isLoggedIn, clickHandler.resetClicks);
+	app.route('/poll/:id')
+		.get(isLoggedIn, pollHandler.getPoll)
+		.post(isLoggedIn, BodyParser.json(), pollHandler.addPoll)
+		.delete(isLoggedIn, pollHandler.deletePoll);
 };
