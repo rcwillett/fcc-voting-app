@@ -1,5 +1,5 @@
-angular.module("pollsService", [])
-.service("pollService", ["$q, $http", function ($http){
+angular.module("pollsServiceModule", [])
+.service("pollService", ["$http", function ($http){
     var self = this;
     
     self.getPoll = function(id){
@@ -15,7 +15,7 @@ angular.module("pollsService", [])
         var requestObj = {"numItems" : numItems};
         return $http({
             method: "GET",
-            url: "/getPolls",
+            url: "/polls",
             params: requestObj
         });
     };

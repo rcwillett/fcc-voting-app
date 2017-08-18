@@ -10,4 +10,4 @@ var Poll = new Schema({
     options: [{optionText: String, optionId: Number, numTimesSelected: Number}]
 });
 
-module.exports = mongoose.model('Poll', Poll);
+module.exports = mongoose.model('PollModel', Poll);

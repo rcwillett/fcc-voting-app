@@ -13,11 +13,13 @@ function PollHandler () {
 	};
 	
 	this.getPolls = function(req, res){
-	    Poll.find().limit(req.params.numItems).exec(function(err, results){
+		console.log(req.query.numItems);
+	    Poll.find(function(err, results){
+	    	console.log(results);
 	        if(!err)
 	            res.json(results);
 	    });
-	}
+	};
 	
 	this.addPoll = function(req, res){
 	    if(req.user){

@@ -1,1 +1,1 @@
-angular.module("pollApp", ["pollsController", "pollsService"]);
+angular.module("pollApp", ["pollControllerModule", "pollsServiceModule"]);
