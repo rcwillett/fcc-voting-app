@@ -1,0 +1,8 @@
+<h1>{{vm.poll.name}}</h1>
+<h2>Created By: {{vm.poll.creator.userName}}</h2>
+<form ng-submit="vm.submitSelection()">
+    <select ng-model="selectedOption" ng-options="poll.optionId as poll.optionText for poll in vm.poll.options">
+        <option value="">Select an option</option>
+    </select>
+    <input value="Submit Selection" type="submit"/>
+</form>
