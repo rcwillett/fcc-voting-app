@@ -1,0 +1,8 @@
+<h1>All polls</h1>
+<ul ng-repeat="poll in pollArray">
+    <li>
+        <p>Poll Name: {{poll.name}}</p>
+        <p>Poll Creator: {{poll.creator.userName}}</p>
+        <a href="#!/viewPoll/{{poll._id}}">Go to poll</a>
+    </li>
+</ul>

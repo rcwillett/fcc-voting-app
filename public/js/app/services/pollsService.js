@@ -3,11 +3,10 @@ angular.module("pollsServiceModule", [])
     var self = this;
     
     self.getPoll = function(id){
-        var requestObj = {"id" : id};
+        var url = "/poll/" + id;
         return $http({
             method: "GET",
-            url: "/getPoll",
-            params: requestObj
+            url: url
         });
     };
     
@@ -25,6 +24,18 @@ angular.module("pollsServiceModule", [])
         return $http({
            method: "POST",
            url: "/addPoll",
+           data: requestData
+        });
+    }
+    
+    self.vote = function(pollId, optionId){
+        var requestData = {
+            "pollId": pollId,
+            "optionId": optionId
+        };
+        return $http({
+           method: "POST",
+           url: "/vote",
            data: requestData
         });
     }
