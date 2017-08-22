@@ -52,7 +52,8 @@ function PollHandler() {
 				}
 				else {
 					votingPoll.options.forEach(function(option) {
-						if (option.id === req.body.optionId) {
+						if (option.optionId === req.body.optionId) {
+							console.log(option.optionText);
 							option.numTimesSelected++;
 							res.status(200);
 						}
