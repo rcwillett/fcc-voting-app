@@ -31,7 +31,7 @@ Poll1.save(function (err, fluffy) {
 var Poll2 = new PollModel({
     name: "Sweet Poll 2",
     creator:{id: 1, userName: "coolUser1"},
-    participants: [],
+    participants: [{userId: "59937a0dc7fc560b9fed35fb", optionId: 2}],
     options: [{optionText: "Sweet Option 1", optionId: 1, numTimesSelected: 0}, {optionText: "Sweet Option 2", optionId: 2, numTimesSelected: 0}]
 });
 Poll2.save(function (err, fluffy) {

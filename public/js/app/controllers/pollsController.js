@@ -4,5 +4,4 @@ angular.module("pollControllerModule",["pollsServiceModule"])
     pollService.getPolls(10).then(function(pollResult){
         $scope.pollArray = pollResult.data;
     });
-    
 }]);
