@@ -1,21 +1,30 @@
 'use strict';
 
 var Poll = require('../models/polls.js');
+var userSelection = require('../models/userSelection.js');
 
 function PollHandler() {
 
 	this.getPoll = function(req, res) {
 		Poll.findOne({ '_id': req.params.id })
 			.exec(function(err, result) {
+				var response = {
+					userSelection: null,
+					pollInfo: result
+				};
 				if (err) { throw err; }
-				res.json(result);
+				if (req.user) {
+					var selectArray = result.participants.filter(function(participant) {
+						return participant.userId == req.user.github.id
+					});
+					response.userSelection = selectArray.length > 0 ? selectArray[0].optionId : null;
+				}
+				res.json(response);
 			});
 	};
 
 	this.getPolls = function(req, res) {
-		console.log(req.query.numItems);
 		Poll.find(function(err, results) {
-			console.log(results);
 			if (!err)
 				res.json(results);
 		});
@@ -43,24 +52,41 @@ function PollHandler() {
 			res.redirect("/login");
 		}
 	};
+	
 	this.voteOnPoll = function(req, res) {
 		Poll.findOne({ '_id': req.body.pollId },
 			function(err, votingPoll) {
+				var selectedOption,
+					userVoted = false;
 				if (err || votingPoll == null) {
 					res.status(500);
 					res.send("Poll Not Found");
 				}
 				else {
-					votingPoll.options.forEach(function(option) {
-						if (option.optionId === req.body.optionId) {
-							console.log(option.optionText);
-							option.numTimesSelected++;
-							res.status(200);
+					if (req.user) {
+						votingPoll.participants.forEach(function(userInfo) {
+							if (req.user.github.id === userInfo.userId) {
+								userVoted = true;
+								adjustOption(votingPoll.options, userInfo.optionId, -1);
+								userInfo.optionId = req.body.optionId;
+								adjustOption(votingPoll.options, req.body.optionId, 1);
+							}
+						});
+						if (!userVoted) {
+							adjustOption(votingPoll.options, req.body.optionId, 1, res);
+							votingPoll.participants.push(new userSelection(req.user.github.id, req.body.optionId));
+							//Function to update user's voted polls
 						}
-					});
+						res.status(200);
+					}
+					else {
+						adjustOption(votingPoll.options, req.body.optionId, 1);
+						res.status(200);
+					}
 					votingPoll.save(function(err, updatedPoll) {
 						if (err) {
 							res.status(500);
+							res.send("Unexpected Error Occured")
 						}
 						else {
 							res.json(updatedPoll);
@@ -79,6 +105,15 @@ function PollHandler() {
 			return { isValid: false, message: "Invalid poll data Provided" };
 		}
 	}
+
+	function adjustOption(pollOptions, selectedId, adjustment) {
+		pollOptions.forEach(function(option) {
+			if (option.optionId === selectedId) {
+				option.numTimesSelected += adjustment;
+			}
+		});
+	}
+
 }
 
 module.exports = PollHandler;
