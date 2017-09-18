@@ -1,9 +1,12 @@
 'use strict';
 
 var Poll = require('../models/polls.js');
-var userSelection = require('../models/userSelection.js');
+var userSelection = require('../models/general/userSelection.js');
+var UserHandler = require('../controllers/userHandler.server.js');
 
 function PollHandler() {
+
+	var userHandler = new UserHandler();
 
 	this.getPoll = function(req, res) {
 		Poll.findOne({ '_id': req.params.id })
@@ -52,7 +55,7 @@ function PollHandler() {
 			res.redirect("/login");
 		}
 	};
-	
+
 	this.voteOnPoll = function(req, res) {
 		Poll.findOne({ '_id': req.body.pollId },
 			function(err, votingPoll) {
@@ -64,20 +67,26 @@ function PollHandler() {
 				}
 				else {
 					if (req.user) {
-						votingPoll.participants.forEach(function(userInfo) {
-							if (req.user.github.id === userInfo.userId) {
-								userVoted = true;
-								adjustOption(votingPoll.options, userInfo.optionId, -1);
-								userInfo.optionId = req.body.optionId;
-								adjustOption(votingPoll.options, req.body.optionId, 1);
-							}
-						});
-						if (!userVoted) {
-							adjustOption(votingPoll.options, req.body.optionId, 1, res);
-							votingPoll.participants.push(new userSelection(req.user.github.id, req.body.optionId));
-							//Function to update user's voted polls
-						}
-						res.status(200);
+						userHandler.addUpdateParticipatedPoll(req.user.github.id, req.body.pollId, votingPoll.name).then(
+							function(successResp) {
+								votingPoll.participants.forEach(function(userInfo) {
+									if (req.user.github.id === userInfo.userId) {
+										userVoted = true;
+										adjustOption(votingPoll.options, userInfo.optionId, -1);
+										userInfo.optionId = req.body.optionId;
+										adjustOption(votingPoll.options, req.body.optionId, 1);
+									}
+								});
+								if (!userVoted) {
+									adjustOption(votingPoll.options, req.body.optionId, 1, res);
+									votingPoll.participants.push(new userSelection(req.user.github.id, req.body.optionId));
+								}
+								res.status(200);
+							},
+							function(errorResp) {
+								res.status(500);
+								res.send("Unexpected Error Occured")
+							});
 					}
 					else {
 						adjustOption(votingPoll.options, req.body.optionId, 1);
