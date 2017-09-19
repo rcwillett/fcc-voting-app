@@ -19,7 +19,7 @@ angular.module("pollsServiceModule", [])
         });
     };
     
-    self.addPoll = function(pollObj){
+    self.createEditPoll = function(pollObj){
         var requestData = pollObj;
         return $http({
            method: "POST",

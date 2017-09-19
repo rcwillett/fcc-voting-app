@@ -9,14 +9,28 @@
 </head>
 
 <header>
-	<p>Welcome, <span id="display-name"></span>!</p>
-	<a class="menu" href="/profile">Profile</a>
-	<p>|</p>
-	<a class="menu" href="/logout">Logout</a>
+	<!--<p>Welcome, <span id="display-name"></span>!</p>-->
+	<!--<a class="menu" href="/profile">Profile</a>-->
+	<!--<p>|</p>-->
+	<!--<a class="menu" href="/logout">Logout</a>-->
 </header>
 
 <body>
-
+	<nav class="nav navbar-default">
+		<div class="container">
+		<ul class="nav navbar-nav">
+			<li>
+				<a href="/profile">Profile</a>
+			</li>
+			<li>
+				<a href="#!createPoll">Create New Poll</a>
+			</li>
+			<li class="pull-right">
+				<a href="/logout">Logout</a>
+			</li>
+		</ul>
+		</div>
+	</nav>
 	<div class="container" ng-app="pollApp">
 		<a href="#!home">Home</a>
 		<ng-view></ng-view>
@@ -28,6 +42,7 @@
 	<script src="/public/js/app/services/pollsService.js"></script>
 	<script src="/public/js/app/controllers/pollsController.js"></script>
 	<script src="/public/js/app/controllers/pollViewController.js"></script>
+	<script src="/public/js/app/controllers/createEditPollController.js"></script>
 	<script src="/public/js/app/controllerVariant.js"></script>
 </body>
 

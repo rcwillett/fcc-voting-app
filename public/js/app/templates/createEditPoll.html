@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Create/Edit Poll</h1>
+            <p>Name of Poll:</p>
+            <input ng-model="vm.pollTitle" type="text" placeholder="Enter Poll Title"/>
+        </div>
+        <div class="col-xs-12">
+            <p>Poll Description</p>
+            <textarea ng-model="vm.pollDescription" placeholder="Enter Poll Description"/>
+        </div>
+        <div class="col-xs-12">
+            <h3>Current Poll Options:</h3>
+            <div class="row" ng-repeat="option in vm.pollOptions track by option.id">
+                <div class="col-xs-12">
+                    {{option.optionText}}
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <form ng-submit="vm.addOption()">
+                <h3>Add New Option:</h3>
+                <input ng-model="vm.newOptionText" type="text" placeholder="Enter Option Text" />
+                <input type="submit" value="Add Option" />
+            </form>
+        </div>
+        <div class="col-xs-12">
+            <button ng-click="vm.createPoll()">Create Poll</button>
+        </div>
+    </div>
+</div>
