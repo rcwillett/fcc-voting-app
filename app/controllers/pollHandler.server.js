@@ -1,6 +1,7 @@
 'use strict';
 
 var Poll = require('../models/polls.js');
+var pollModel = require('../models/general/poll.js');
 var userSelection = require('../models/general/userSelection.js');
 var UserHandler = require('../controllers/userHandler.server.js');
 
@@ -35,24 +36,31 @@ function PollHandler() {
 
 	this.addPoll = function(req, res) {
 		if (req.user) {
-			var pollValid = validatePoll(req.body);
-			if (pollValid.isValid) {
-				var newPoll = new Poll(req.body);
+			req.body.options.forEach(function(option){
+				option.numTimesSelected = 0;
+			});
+			//var pollValid = validatePoll(req.body);
+			if (true) {
+				var newPoll = new Poll(new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
 				newPoll.save(function(err, newPoll) {
 					if (!err) {
-						res.redirect("/poll/" + newPoll._id);
+						res.status(200);
+						console.log(newPoll._id);
+						res.json({ pollId: newPoll._id });
 					}
 					else {
-						res.json({ isValid: false, message: "Failed to add poll" })
+						res.status(500);
+						res.json({ message: "Failed to add poll" })
 					}
 				});
 			}
 			else {
-				res.json(pollValid)
+				res.status(500);
+				res.json({ message: "Invalid Poll"});
 			}
 		}
 		else {
-			res.redirect("/login");
+			res.json({ message: "User Must Log In"});
 		}
 	};
 

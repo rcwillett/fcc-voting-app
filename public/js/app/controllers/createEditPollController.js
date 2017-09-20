@@ -8,26 +8,45 @@ angular.module("createPollModule", [])
         vm.pollOptions = [];
         vm.newOptionText = "";
         vm.addOption = addOption;
+        vm.removeOption = removeOption;
         vm.createPoll = createPoll;
 
         function addOption() {
             if (vm.newOptionText) {
                 var pollOptionId = vm.pollOptions.length;
-                vm.pollOptions.push({ id: pollOptionId, optionText: vm.newOptionText });
+                vm.pollOptions.push({ optionId: pollOptionId, optionText: vm.newOptionText });
                 vm.newOptionText = "";
                 scopeApply();
             }
         }
+        
+        function removeOption(optionId){
+            vm.pollOptions.splice(optionId, 1);
+            vm.pollOptions.forEach(function(option, index){
+               option.id = index; 
+            });
+            scopeApply();
+        }
 
         function createPoll() {
-            pollService.createEditPoll(new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions));
+            pollService.createEditPoll(new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
+            .then(successfulPollCreation, failedPollCreation);
+        }
+        
+        function successfulPollCreation(res){
+            window.location = "/#!/viewPoll/"+res.data.pollId;
+        }
+
+        function failedPollCreation(res){
+            vm.error = true;
+            vm.errorMessage = res.message;
         }
 
         function pollObject(pollId, pollName, pollDescription, pollOptions) {
             this.pollId = pollId;
-            this.pollName = pollName;
-            this.pollDescription = pollDescription;
-            this.pollOptions = pollOptions;
+            this.name = pollName;
+            this.description = pollDescription;
+            this.options = pollOptions;
         }
 
         function scopeApply() {
