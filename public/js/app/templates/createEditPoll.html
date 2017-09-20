@@ -11,9 +11,9 @@
         </div>
         <div class="col-xs-12">
             <h3>Current Poll Options:</h3>
-            <div class="row" ng-repeat="option in vm.pollOptions track by option.id">
+            <div class="row" ng-repeat="option in vm.pollOptions track by option.optionId">
                 <div class="col-xs-12">
-                    {{option.optionText}}
+                    {{option.optionText}} <button ng-click="vm.removeOption(option.id)">Remove Option</button>
                 </div>
             </div>
         </div>
