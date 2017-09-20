@@ -3,7 +3,7 @@
 var BodyParser = require("body-parser");
 var path = process.cwd();
 var PollHandler = require(path + '/app/controllers/pollHandler.server.js');
-
+var UserHandler = require(path + '/app/controllers/userHandler.server.js');
 module.exports = function (app, passport) {
 
 	function isLoggedIn (req, res, next) {
@@ -15,6 +15,7 @@ module.exports = function (app, passport) {
 	}
 
 	var pollHandler = new PollHandler();
+	var userHandler = new UserHandler();
 
 	app.route('/')
 		.get(isLoggedIn, function (req, res) {
@@ -62,4 +63,7 @@ module.exports = function (app, passport) {
 		
 	app.route('/vote')
 		.post(BodyParser.json(), pollHandler.voteOnPoll);
+		
+	app.route('/getUserInfo')
+		.get(userHandler.getUserInfo);
 };

@@ -13,14 +13,12 @@
             <h3>Current Poll Options:</h3>
             <div class="row" ng-repeat="option in vm.pollOptions track by option.optionId">
                 <div class="col-xs-12">
-                    {{option.optionText}} <button ng-click="vm.removeOption(option.id)">Remove Option</button>
+                    <input ng-model="option.optionText" placeholder="Enter Option Text" /><button ng-click="vm.removeOption(option.id)">Remove Option</button>
                 </div>
             </div>
         </div>
         <div class="col-xs-12">
             <form ng-submit="vm.addOption()">
-                <h3>Add New Option:</h3>
-                <input ng-model="vm.newOptionText" type="text" placeholder="Enter Option Text" />
                 <input type="submit" value="Add Option" />
             </form>
         </div>

@@ -6,18 +6,18 @@ angular.module("createPollModule", [])
         vm.pollDescription = "";
         vm.pollId = null;
         vm.pollOptions = [];
-        vm.newOptionText = "";
+        //vm.newOptionText = "";
         vm.addOption = addOption;
         vm.removeOption = removeOption;
         vm.createPoll = createPoll;
 
         function addOption() {
-            if (vm.newOptionText) {
+           // if (vm.newOptionText) {
                 var pollOptionId = vm.pollOptions.length;
-                vm.pollOptions.push({ optionId: pollOptionId, optionText: vm.newOptionText });
-                vm.newOptionText = "";
+                vm.pollOptions.push({ optionId: pollOptionId, optionText: "" });
+                //vm.newOptionText = "";
                 scopeApply();
-            }
+           // }
         }
         
         function removeOption(optionId){
@@ -27,7 +27,6 @@ angular.module("createPollModule", [])
             });
             scopeApply();
         }
-
         function createPoll() {
             pollService.createEditPoll(new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
             .then(successfulPollCreation, failedPollCreation);

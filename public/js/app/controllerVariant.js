@@ -1,4 +1,4 @@
-var pollApp = angular.module("pollApp", ["ngRoute", "pollControllerModule", "pollsServiceModule", "pollViewControllerModule", "createPollModule"])
+var pollApp = angular.module("pollApp", ["ngRoute", "pollControllerModule", "pollsServiceModule", "pollViewControllerModule", "createPollModule", "userPollsControllerModule"])
 .config(["$routeProvider", function($routeProvider){
     $routeProvider
     .when("/viewPoll/:pollId", {
@@ -8,6 +8,10 @@ var pollApp = angular.module("pollApp", ["ngRoute", "pollControllerModule", "pol
     .when("/createPoll", {
         templateUrl: "/public/js/app/templates/createEditPoll.html",
         controller: "createEditPollController"
+    })
+    .when("/myPolls", {
+        templateUrl: "/public/js/app/templates/userPolls.html",
+        controller: "userPollController"
     })
     .otherwise({
         templateUrl: "/public/js/app/templates/home.html",
