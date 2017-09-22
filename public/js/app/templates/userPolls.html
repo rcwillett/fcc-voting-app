@@ -4,8 +4,8 @@
             <h1>My Polls</h1>
             <div ng-repeat="poll in vm.pollArray track by id">
                 {{poll.name}}
-                <a class="btn btn-default" ng-href="'#!pollStats?pollId=' + poll.id">View Stats</a>
-                <a class="btn btn-default" ng-href="'#!createPoll?pollId='+poll.id">Edit Poll</a>
+                <a class="btn btn-default" href="{{vm.generateStatsLink(poll.id)}}">View Stats</a>
+                <a class="btn btn-default" href="{{vm.generateEditLink(poll.id)}}">Edit Poll</a>
             </div>
         </div>
     </div>

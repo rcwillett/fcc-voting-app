@@ -36,7 +36,7 @@ function PollHandler() {
 
 	this.addPoll = function(req, res) {
 		if (req.user) {
-			req.body.options.forEach(function(option){
+			req.body.options.forEach(function(option) {
 				option.numTimesSelected = 0;
 			});
 			//var pollValid = validatePoll(req.body);
@@ -44,9 +44,15 @@ function PollHandler() {
 				var newPoll = new Poll(new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
 				newPoll.save(function(err, newPoll) {
 					if (!err) {
-						res.status(200);
-						console.log(newPoll._id);
-						res.json({ pollId: newPoll._id });
+						userHandler.addCreatedPoll(req.user.github.id, newPoll._id, req.body.name).then(
+							function(successResp) {
+								res.status(200);
+								res.json({ pollId: newPoll._id });
+							},
+							function(err) {
+								res.status(500);
+								res.json({ message: "Failed to add poll" })
+							});
 					}
 					else {
 						res.status(500);
@@ -56,11 +62,11 @@ function PollHandler() {
 			}
 			else {
 				res.status(500);
-				res.json({ message: "Invalid Poll"});
+				res.json({ message: "Invalid Poll" });
 			}
 		}
 		else {
-			res.json({ message: "User Must Log In"});
+			res.json({ message: "User Must Log In" });
 		}
 	};
 

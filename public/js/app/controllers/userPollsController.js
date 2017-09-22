@@ -5,6 +5,11 @@ angular.module("userPollsControllerModule",["userServiceModule"])
     vm.loading = true;
     vm.error = false;
     vm.pollArray = [];
+    
+    vm.generateStatsLink = generateStatsLink;
+    
+    vm.generateEditLink = generateEditLink;
+    
     initData();
     
     function initData(){
@@ -18,6 +23,15 @@ angular.module("userPollsControllerModule",["userServiceModule"])
 
     function errorResp(resp){
         
+    }
+    
+        
+    function generateEditLink(pollId){
+        return '#!editPoll/' + pollId;
+    }
+    
+    function generateStatsLink(pollId){
+        return '#!pollStats/' + pollId;
     }
 
 }]);
