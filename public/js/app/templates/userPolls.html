@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>My Polls</h1>
-            <div ng-repeat="poll in vm.pollArray track by id">
+            <div ng-repeat="poll in vm.pollArray track by $index">
                 {{poll.name}}
                 <a class="btn btn-default" href="{{vm.generateStatsLink(poll.id)}}">View Stats</a>
                 <a class="btn btn-default" href="{{vm.generateEditLink(poll.id)}}">Edit Poll</a>
