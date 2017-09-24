@@ -1,5 +1,5 @@
 angular.module("createPollModule", [])
-    .controller("createEditPollController", ["$scope", "$timeout", "pollService", function createEditPollController($scope, $timeout, pollService) {
+    .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "pollService", "appConstants", function createEditPollController($scope, $timeout, $route, $routeParams, pollService, appConstants) {
         $scope.vm = {};
         var vm = $scope.vm;
         vm.pollTitle = "";
@@ -10,6 +10,21 @@ angular.module("createPollModule", [])
         vm.addOption = addOption;
         vm.removeOption = removeOption;
         vm.createPoll = createPoll;
+        vm.loginError = false;
+        
+        if($route.current.$$route.createEdit === appConstants.createEditEnum.edit){
+            pollService.getPoll($routeParams.pollId).then(
+                function(serverResp) {
+                    vm.poll = serverResp.data.pollInfo;
+                    vm.selectedOption = serverResp.data.userSelection ? serverResp.data.userSelection : "";
+                    $timeout(function(){$scope.$apply();});
+                },
+                function(serverResp) {
+                    vm.unexpectedError = true;
+                }
+            );
+        }
+        
 
         function addOption() {
            // if (vm.newOptionText) {

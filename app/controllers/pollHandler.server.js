@@ -70,6 +70,40 @@ function PollHandler() {
 		}
 	};
 
+	this.editPoll = function(req, res) {
+			if (req.user) {
+				Poll.findOne({ '_id': req.params.id })
+					.exec(function(err, pollToEdit) {
+							if (err) { throw err; }
+							else if (pollToEdit.creator.id !== req.user.github.id) {
+								res.status(403);
+								res.json({ status: 2, message: "You are not authorized to edit this poll" });
+							}
+							else {
+								var newPollInfo = new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options);
+								pollToEdit.name = newPollInfo.name;
+								pollToEdit.description = newPollInfo.description;
+								pollToEdit.options = newPollInfo.options;
+
+								pollToEdit.save(function(err, updatedPoll) {
+									if (err) {
+										throw err;
+									}
+									else {
+										res.status(200);
+										res.json({ status: 0, message: "Poll Edit Successful" });
+
+									}
+								});
+							}
+						});
+				}
+				else{
+					res.status(403);
+					res.json({status: 1, message: "Must Log In To Edit Poll"});
+				}
+			}
+			
 	this.voteOnPoll = function(req, res) {
 		Poll.findOne({ '_id': req.body.pollId },
 			function(err, votingPoll) {
