@@ -36,18 +36,19 @@ function PollHandler() {
 
 	this.addPoll = function(req, res) {
 		if (req.user) {
-			req.body.options.forEach(function(option) {
-				option.numTimesSelected = 0;
-			});
+			// req.body.options.forEach(function(option) {
+			// 	option.numTimesSelected = 0;
+			// });
+			//TODO: Add Poll Validation
 			//var pollValid = validatePoll(req.body);
 			if (true) {
 				var newPoll = new Poll(new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
-				newPoll.save(function(err, newPoll) {
+				newPoll.save(function(err, savedNewPoll) {
 					if (!err) {
-						userHandler.addCreatedPoll(req.user.github.id, newPoll._id, req.body.name).then(
+						userHandler.addCreatedPoll(req.user.github.id, savedNewPoll._id, req.body.name).then(
 							function(successResp) {
 								res.status(200);
-								res.json({ pollId: newPoll._id });
+								res.json({ pollId: savedNewPoll._id });
 							},
 							function(err) {
 								res.status(500);
@@ -80,10 +81,15 @@ function PollHandler() {
 								res.json({ status: 2, message: "You are not authorized to edit this poll" });
 							}
 							else {
-								var newPollInfo = new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options);
+							req.body.options.forEach(function(option) {
+								option.numTimesSelected = 0;
+							});
+							var newPollInfo = new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options);
 								pollToEdit.name = newPollInfo.name;
 								pollToEdit.description = newPollInfo.description;
 								pollToEdit.options = newPollInfo.options;
+								pollToEdit.participants = [];
+								
 
 								pollToEdit.save(function(err, updatedPoll) {
 									if (err) {

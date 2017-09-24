@@ -11,7 +11,7 @@
         </div>
         <div class="col-xs-12">
             <h3>Current Poll Options:</h3>
-            <div class="row" ng-repeat="option in vm.pollOptions track by option.optionId">
+            <div class="row" ng-repeat="option in vm.pollOptions track by $index">
                 <div class="col-xs-12">
                     <input ng-model="option.optionText" placeholder="Enter Option Text" /><button ng-click="vm.removeOption(option.id)">Remove Option</button>
                 </div>
@@ -23,7 +23,7 @@
             </form>
         </div>
         <div class="col-xs-12">
-            <button ng-click="vm.createPoll()">Create Poll</button>
+            <button ng-click="vm.submitPoll()">{{vm.submitText}}</button>
         </div>
     </div>
 </div>
