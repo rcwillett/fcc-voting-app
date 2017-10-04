@@ -45,7 +45,8 @@ angular.module("pollsServiceModule", [])
         return $http({
            method: "POST",
            url: "/vote",
-           data: requestData
+           data: requestData,
+           type: "application/json"
         });
     }
     
