@@ -30,6 +30,7 @@ function PollHandler() {
 	this.getPolls = function(req, res) {
 		Poll.find(function(err, results) {
 			if (!err)
+				res.status(200);
 				res.json(results);
 		});
 	};
@@ -72,44 +73,44 @@ function PollHandler() {
 	};
 
 	this.editPoll = function(req, res) {
-			if (req.user) {
-				Poll.findOne({ '_id': req.params.id })
-					.exec(function(err, pollToEdit) {
-							if (err) { throw err; }
-							else if (pollToEdit.creator.id !== req.user.github.id) {
-								res.status(403);
-								res.json({ status: 2, message: "You are not authorized to edit this poll" });
+		if (req.user) {
+			Poll.findOne({ '_id': req.params.id })
+				.exec(function(err, pollToEdit) {
+					if (err) { throw err; }
+					else if (pollToEdit.creator.id !== req.user.github.id) {
+						res.status(403);
+						res.json({ status: 2, message: "You are not authorized to edit this poll" });
+					}
+					else {
+						req.body.options.forEach(function(option) {
+							option.numTimesSelected = 0;
+						});
+						var newPollInfo = new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options);
+						pollToEdit.name = newPollInfo.name;
+						pollToEdit.description = newPollInfo.description;
+						pollToEdit.options = newPollInfo.options;
+						pollToEdit.participants = [];
+
+
+						pollToEdit.save(function(err, updatedPoll) {
+							if (err) {
+								throw err;
 							}
 							else {
-							req.body.options.forEach(function(option) {
-								option.numTimesSelected = 0;
-							});
-							var newPollInfo = new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options);
-								pollToEdit.name = newPollInfo.name;
-								pollToEdit.description = newPollInfo.description;
-								pollToEdit.options = newPollInfo.options;
-								pollToEdit.participants = [];
-								
+								res.status(200);
+								res.json({ status: 0, message: "Poll Edit Successful" });
 
-								pollToEdit.save(function(err, updatedPoll) {
-									if (err) {
-										throw err;
-									}
-									else {
-										res.status(200);
-										res.json({ status: 0, message: "Poll Edit Successful" });
-
-									}
-								});
 							}
 						});
-				}
-				else{
-					res.status(403);
-					res.json({status: 1, message: "Must Log In To Edit Poll"});
-				}
-			}
-			
+					}
+				});
+		}
+		else {
+			res.status(403);
+			res.json({ status: 1, message: "Must Log In To Edit Poll" });
+		}
+	}
+
 	this.voteOnPoll = function(req, res) {
 		Poll.findOne({ '_id': req.body.pollId },
 			function(err, votingPoll) {
@@ -123,7 +124,7 @@ function PollHandler() {
 					if (req.user) {
 						userHandler.addUpdateParticipatedPoll(req.user.github.id, req.body.pollId, votingPoll.name).then(
 							function(successResp) {
-								votingPoll.participants.forEach(function(userInfo) {
+								votingPoll.participants.forEach(function(userInfo, index, participantArray) {
 									if (req.user.github.id === userInfo.userId) {
 										userVoted = true;
 										adjustOption(votingPoll.options, userInfo.optionId, -1);
@@ -132,10 +133,10 @@ function PollHandler() {
 									}
 								});
 								if (!userVoted) {
-									adjustOption(votingPoll.options, req.body.optionId, 1, res);
+									adjustOption(votingPoll.options, req.body.optionId, 1);
 									votingPoll.participants.push(new userSelection(req.user.github.id, req.body.optionId));
 								}
-								res.status(200);
+								savePoll();
 							},
 							function(errorResp) {
 								res.status(500);
@@ -144,14 +145,19 @@ function PollHandler() {
 					}
 					else {
 						adjustOption(votingPoll.options, req.body.optionId, 1);
-						res.status(200);
+						savePoll();
 					}
+				}
+
+				function savePoll() {
 					votingPoll.save(function(err, updatedPoll) {
 						if (err) {
 							res.status(500);
 							res.send("Unexpected Error Occured")
 						}
 						else {
+							console.log("got Here");
+							res.status(200);
 							res.json(updatedPoll);
 						}
 					});
@@ -170,13 +176,13 @@ function PollHandler() {
 	}
 
 	function adjustOption(pollOptions, selectedId, adjustment) {
-		pollOptions.forEach(function(option) {
-			if (option.optionId === selectedId) {
-				option.numTimesSelected += adjustment;
+		for (var i = 0; i < pollOptions.length; i++) {
+			if (pollOptions[i].optionId === selectedId) {
+				pollOptions[i].numTimesSelected += adjustment;
+				return;
 			}
-		});
+		}
 	}
-
 }
 
 module.exports = PollHandler;
