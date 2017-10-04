@@ -156,7 +156,6 @@ function PollHandler() {
 							res.send("Unexpected Error Occured")
 						}
 						else {
-							console.log("got Here");
 							res.status(200);
 							res.json(updatedPoll);
 						}

@@ -14,7 +14,7 @@ angular.module("pollStatsControllerModule", ["pollsServiceModule"])
                     vm.poll.options.forEach(function(option, index, optionArray) {
                         optionNames.push(option.optionText);
                         optionVotes.push(option.numTimesSelected);
-                        optionColors.push(rainbow(index, optionArray.length));
+                        optionColors.push(rainbow(optionArray.length, index));
                     });
                     initBarChart(optionNames, optionVotes, optionColors);
                     initPieChart(optionNames, optionVotes, optionColors);
@@ -47,7 +47,8 @@ angular.module("pollStatsControllerModule", ["pollsServiceModule"])
                         yAxes: [{
                             ticks: {
                                 beginAtZero: true
-                            }
+                            },
+                            label:'# of Votes' 
                         }]
                     }
                 },
