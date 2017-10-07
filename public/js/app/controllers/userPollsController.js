@@ -1,5 +1,5 @@
-angular.module("userPollsControllerModule",["userServiceModule"])
-.controller("userPollController", ["$scope", "userService", function($scope, userService){
+angular.module("userPollsControllerModule",["pollsServiceModule"])
+.controller("userPollController", ["$scope", "pollService", function($scope, pollsService){
     $scope.vm = {};
     var vm = $scope.vm;
     vm.loading = true;
@@ -13,11 +13,11 @@ angular.module("userPollsControllerModule",["userServiceModule"])
     initData();
     
     function initData(){
-        userService.getUserInfo().then(successResp, errorResp);
+        pollsService.getUserPolls().then(successResp, errorResp);
     }
     
     function successResp(resp) {
-        vm.pollArray = resp.data.createdPolls;
+        vm.pollArray = resp.data;
         vm.loading = false;
     }
 

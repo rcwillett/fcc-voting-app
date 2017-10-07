@@ -58,6 +58,9 @@ module.exports = function (app, passport) {
 	app.route('/poll/:id')
 		.get(isLoggedIn, pollHandler.getPoll);
 		
+	app.route('/userPolls')
+		.get(isLoggedIn, pollHandler.getUserPolls);
+		
 	app.route('/addPoll')
 		.post(isLoggedIn, BodyParser.json(), pollHandler.addPoll);
 		

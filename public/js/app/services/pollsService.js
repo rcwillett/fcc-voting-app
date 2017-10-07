@@ -19,6 +19,13 @@ angular.module("pollsServiceModule", [])
         });
     };
     
+    self.getUserPolls = function(userId){
+        return $http({
+            method: "GET",
+            url: "/userPolls"
+        }); 
+    };
+    
     self.createPoll = function(pollObj){
         var requestData = pollObj;
         return $http({
@@ -26,7 +33,7 @@ angular.module("pollsServiceModule", [])
            url: "/addPoll",
            data: requestData
         });
-    }
+    };
     
     self.editPoll = function(pollObj){
         var requestData = pollObj;
@@ -35,7 +42,7 @@ angular.module("pollsServiceModule", [])
            url: "/addPoll",
            data: requestData
         });
-    }
+    };
     
     self.vote = function(pollId, optionId){
         var requestData = {
@@ -48,7 +55,7 @@ angular.module("pollsServiceModule", [])
            data: requestData,
            type: "application/json"
         });
-    }
+    };
     
     return self;
 }]);

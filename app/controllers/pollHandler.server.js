@@ -29,10 +29,31 @@ function PollHandler() {
 
 	this.getPolls = function(req, res) {
 		Poll.find(function(err, results) {
-			if (!err)
+			if (err) {
+				throw err;
+			}
+			else {
 				res.status(200);
 				res.json(results);
+			}
 		});
+	};
+	
+	this.getUserPolls = function(req, res){
+		if(req.user){
+		Poll.find({"creator.id": req.user.github.id}, function(err, results){
+			if (err) {
+				throw err;
+			}
+			else {
+				res.status(200);
+				res.json(results);
+			}
+		});
+		}
+		else{
+			throw "User Not Logged In";
+		}
 	};
 
 	this.addPoll = function(req, res) {
