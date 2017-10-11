@@ -3,13 +3,9 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var User = new Schema({
-	github: {
-		id: String,
-		displayName: String,
-		username: String,
-    	publicRepos: Number
-	}
+var UnauthenticatedUser = new Schema({
+	ips: [String],
+	uuid: String
 });
 
 module.exports = mongoose.model('User', User);

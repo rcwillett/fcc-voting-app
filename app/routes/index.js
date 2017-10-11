@@ -18,7 +18,7 @@ module.exports = function (app, passport) {
 	var userHandler = new UserHandler();
 
 	app.route('/')
-		.get(isLoggedIn, function (req, res) {
+		.get(function (req, res) {
 			res.sendFile(path + '/public/index.html');
 		});
 
@@ -56,7 +56,10 @@ module.exports = function (app, passport) {
 		.get(pollHandler.getPolls);
 
 	app.route('/poll/:id')
-		.get(isLoggedIn, pollHandler.getPoll);
+		.get(pollHandler.getPoll);
+		
+	app.route('/userPolls')
+		.get(isLoggedIn, pollHandler.getUserPolls);
 		
 	app.route('/addPoll')
 		.post(isLoggedIn, BodyParser.json(), pollHandler.addPoll);
@@ -65,5 +68,5 @@ module.exports = function (app, passport) {
 		.post(BodyParser.json(), pollHandler.voteOnPoll);
 		
 	app.route('/getUserInfo')
-		.get(userHandler.getUserInfo);
+		.get(isLoggedIn, userHandler.getUserInfo);
 };

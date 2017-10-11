@@ -45,7 +45,7 @@ function UserHandler() {
                 }
             });
         });
-    }
+    };
 
     this.addUpdateParticipatedPoll = function(userId, pollId, pollName) {
         return new Promise(function(resolve, reject) {
@@ -71,7 +71,7 @@ function UserHandler() {
                 }
             });
         });
-    }
+    };
 
     function isPollReferenced(participatedPolls, pollId) {
         var pollParticipated = false;

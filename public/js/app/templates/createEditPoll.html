@@ -13,7 +13,7 @@
             <h3>Current Poll Options:</h3>
             <div class="row" ng-repeat="option in vm.pollOptions track by $index">
                 <div class="col-xs-12">
-                    <input ng-model="option.optionText" placeholder="Enter Option Text" /><button ng-click="vm.removeOption(option.id)">Remove Option</button>
+                    <input ng-model="option.optionText" placeholder="Enter Option Text" /><button ng-click="vm.removeOption(option.optionId)">Remove Option</button>
                 </div>
             </div>
         </div>

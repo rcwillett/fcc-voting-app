@@ -35,18 +35,21 @@ angular.module("createPollModule", [])
         }
 
         function addOption() {
-            // if (vm.newOptionText) {
-            var pollOptionId = vm.pollOptions.length;
-            vm.pollOptions.push({ optionId: pollOptionId, optionText: "" });
-            //vm.newOptionText = "";
+            if (vm.pollOptions[vm.pollOptions.length-1].optionText !== "") {
+                var pollOptionId = vm.pollOptions.length;
+                vm.pollOptions.push({ optionId: pollOptionId, optionText: "" });
+            }
+            else {
+                vm.showError = "Please Fill Out Before Adding New Poll Item"
+            }
             scopeApply();
-            // }
+
         }
 
         function removeOption(optionId) {
             vm.pollOptions.splice(optionId, 1);
             vm.pollOptions.forEach(function(option, index) {
-                option.id = index;
+                option.optionId = index;
             });
             scopeApply();
         }
