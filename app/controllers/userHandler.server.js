@@ -21,65 +21,65 @@ function UserHandler() {
         }
     };
 
-    this.addCreatedPoll = function(userId, pollId, pollName) {
-        return new Promise(function(resolve, reject) {
-            Users.findOne({ 'github.id': userId }).exec(function(err, result) {
-                if (err) {
-                    reject("DB Error Occured");
-                }
-                else {
-                    if (!isPollReferenced(result.createdPolls, pollId)) {
-                        result.createdPolls.push(new pollInfo(pollId, pollName));
-                        result.save(function(err, result) {
-                            if (err) {
-                                reject("DB Error Occured");
-                            }
-                            else {
-                                resolve("Updated");
-                            }
-                        });
-                    }
-                    else {
-                        resolve("Poll participated");
-                    }
-                }
-            });
-        });
-    };
+    // this.addCreatedPoll = function(userId, pollId, pollName) {
+    //     return new Promise(function(resolve, reject) {
+    //         Users.findOne({ 'github.id': userId }).exec(function(err, result) {
+    //             if (err) {
+    //                 reject("DB Error Occured");
+    //             }
+    //             else {
+    //                 if (!isPollReferenced(result.createdPolls, pollId)) {
+    //                     result.createdPolls.push(new pollInfo(pollId, pollName));
+    //                     result.save(function(err, result) {
+    //                         if (err) {
+    //                             reject("DB Error Occured");
+    //                         }
+    //                         else {
+    //                             resolve("Updated");
+    //                         }
+    //                     });
+    //                 }
+    //                 else {
+    //                     resolve("Poll participated");
+    //                 }
+    //             }
+    //         });
+    //     });
+    // };
 
-    this.addUpdateParticipatedPoll = function(userId, pollId, pollName) {
-        return new Promise(function(resolve, reject) {
-            Users.findOne({ 'github.id': userId }).exec(function(err, result) {
-                if (err) {
-                    reject("DB Error Occured");
-                }
-                else {
-                    if (!isPollReferenced(result.participatedPolls, pollId)) {
-                        result.participatedPolls.push(new pollInfo(pollId, pollName));
-                        result.save(function(err, result) {
-                            if (err) {
-                                reject("DB Error Occured");
-                            }
-                            else {
-                                resolve("Updated");
-                            }
-                        });
-                    }
-                    else {
-                        resolve("Poll participated");
-                    }
-                }
-            });
-        });
-    };
+    // this.addUpdateParticipatedPoll = function(userId, pollId, pollName) {
+    //     return new Promise(function(resolve, reject) {
+    //         Users.findOne({ 'github.id': userId }).exec(function(err, result) {
+    //             if (err) {
+    //                 reject("DB Error Occured");
+    //             }
+    //             else {
+    //                 if (!isPollReferenced(result.participatedPolls, pollId)) {
+    //                     result.participatedPolls.push(new pollInfo(pollId, pollName));
+    //                     result.save(function(err, result) {
+    //                         if (err) {
+    //                             reject("DB Error Occured");
+    //                         }
+    //                         else {
+    //                             resolve("Updated");
+    //                         }
+    //                     });
+    //                 }
+    //                 else {
+    //                     resolve("Poll participated");
+    //                 }
+    //             }
+    //         });
+    //     });
+    // };
 
-    function isPollReferenced(participatedPolls, pollId) {
-        var pollParticipated = false;
-        participatedPolls.forEach(function(pollInfo) {
-            pollParticipated = pollParticipated || pollInfo.id === pollId;
-        });
-        return pollParticipated;
-    }
+    // function isPollReferenced(participatedPolls, pollId) {
+    //     var pollParticipated = false;
+    //     participatedPolls.forEach(function(pollInfo) {
+    //         pollParticipated = pollParticipated || pollInfo.id === pollId;
+    //     });
+    //     return pollParticipated;
+    // }
 
 }
 
