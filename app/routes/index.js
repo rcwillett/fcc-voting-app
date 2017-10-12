@@ -1,7 +1,9 @@
 'use strict';
 
 var BodyParser = require("body-parser");
+var CookieParser = require('cookie-parser');
 var path = process.cwd();
+var CookieHandler = require(path + '/app/config/cookie.js');
 var PollHandler = require(path + '/app/controllers/pollHandler.server.js');
 var UserHandler = require(path + '/app/controllers/userHandler.server.js');
 module.exports = function (app, passport) {
@@ -10,7 +12,10 @@ module.exports = function (app, passport) {
 		if (req.isAuthenticated()) {
 			return next();
 		} else {
-			res.redirect('/login');
+			res.json({
+				status: 0,
+				message: "You Must Log In To Access This"
+			});
 		}
 	}
 
@@ -18,7 +23,7 @@ module.exports = function (app, passport) {
 	var userHandler = new UserHandler();
 
 	app.route('/')
-		.get(function (req, res) {
+		.get(CookieParser(), CookieHandler, function (req, res) {
 			res.sendFile(path + '/public/index.html');
 		});
 

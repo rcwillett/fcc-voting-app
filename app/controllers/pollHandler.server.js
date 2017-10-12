@@ -38,24 +38,23 @@ function PollHandler() {
 			}
 		});
 	};
-	
-	this.getUserPolls = function(req, res){
-		if(req.user){
-		Poll.find({"creator.id": req.user.github.id}, function(err, results){
-			if (err) {
-				throw err;
-			}
-			else {
-				res.status(200);
-				res.json(results);
-			}
-		});
+
+	this.getUserPolls = function(req, res) {
+		if (req.user) {
+			Poll.find({ "creator.id": req.user.github.id }, function(err, results) {
+				if (err) {
+					throw err;
+				}
+				else {
+					res.status(200);
+					res.json(results);
+				}
+			});
 		}
-		else{
+		else {
 			throw "User Not Logged In";
 		}
 	};
-
 	this.addPoll = function(req, res) {
 		if (req.user) {
 			// req.body.options.forEach(function(option) {
@@ -67,15 +66,8 @@ function PollHandler() {
 				var newPoll = new Poll(new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
 				newPoll.save(function(err, savedNewPoll) {
 					if (!err) {
-						userHandler.addCreatedPoll(req.user.github.id, savedNewPoll._id, req.body.name).then(
-							function(successResp) {
-								res.status(200);
-								res.json({ pollId: savedNewPoll._id });
-							},
-							function(err) {
-								res.status(500);
-								res.json({ message: "Failed to add poll" })
-							});
+						res.status(200);
+						res.json({ pollId: savedNewPoll._id });
 					}
 					else {
 						res.status(500);
@@ -133,6 +125,7 @@ function PollHandler() {
 	}
 
 	this.voteOnPoll = function(req, res) {
+		var cookie = req.cookies.WillittFccVote;
 		Poll.findOne({ '_id': req.body.pollId },
 			function(err, votingPoll) {
 				var selectedOption,
@@ -143,30 +136,37 @@ function PollHandler() {
 				}
 				else {
 					if (req.user) {
-						userHandler.addUpdateParticipatedPoll(req.user.github.id, req.body.pollId, votingPoll.name).then(
-							function(successResp) {
-								votingPoll.participants.forEach(function(userInfo, index, participantArray) {
-									if (req.user.github.id === userInfo.userId) {
-										userVoted = true;
-										adjustOption(votingPoll.options, userInfo.optionId, -1);
-										userInfo.optionId = req.body.optionId;
-										adjustOption(votingPoll.options, req.body.optionId, 1);
-									}
-								});
-								if (!userVoted) {
-									adjustOption(votingPoll.options, req.body.optionId, 1);
-									votingPoll.participants.push(new userSelection(req.user.github.id, req.body.optionId));
-								}
-								savePoll();
-							},
-							function(errorResp) {
-								res.status(500);
-								res.send("Unexpected Error Occured")
-							});
-					}
-					else {
-						adjustOption(votingPoll.options, req.body.optionId, 1);
+						votingPoll.participants.forEach(function(userInfo, index, participantArray) {
+							if (req.user.github.id === userInfo.userId) {
+								userVoted = true;
+								adjustOption(votingPoll.options, userInfo.optionId, -1);
+								userInfo.optionId = req.body.optionId;
+								adjustOption(votingPoll.options, req.body.optionId, 1);
+							}
+						});
+						if (!userVoted) {
+							adjustOption(votingPoll.options, req.body.optionId, 1);
+							votingPoll.participants.push(new userSelection(req.user.github.id, "", req.body.optionId));
+						}
 						savePoll();
+					}
+					else if(cookie){
+						votingPoll.participants.forEach(function(userInfo, index, participantArray) {
+							if (cookie.uuid === userInfo.uuid) {
+								userVoted = true;
+								adjustOption(votingPoll.options, userInfo.optionId, -1);
+								userInfo.optionId = req.body.optionId;
+								adjustOption(votingPoll.options, req.body.optionId, 1);
+							}
+						});
+						if (!userVoted) {
+							adjustOption(votingPoll.options, req.body.optionId, 1);
+							votingPoll.participants.push(new userSelection("", cookie.uuid, req.body.optionId));
+						}
+						savePoll();
+					}
+					else{
+						throw { status: 3, message: "You Must Be Logged in or have cookies enabled to use this application"};
 					}
 				}
 
