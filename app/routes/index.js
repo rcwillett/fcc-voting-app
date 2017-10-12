@@ -21,11 +21,9 @@ module.exports = function (app, passport) {
 
 	var pollHandler = new PollHandler();
 	var userHandler = new UserHandler();
-	
-	app.use(CookieParser(), CookieHandler);
 
 	app.route('/')
-		.get(function (req, res) {
+		.get(CookieParser(), CookieHandler, function (req, res) {
 			res.sendFile(path + '/public/index.html');
 		});
 

@@ -6,35 +6,19 @@ var Schema = mongoose.Schema;
 mongoose.connect("mongodb://localhost:27017/polls");
 mongoose.Promise = global.Promise;
 
-var Poll = new Schema({
-    name: String,
-    creator: {id: String, userName: String},
-    participants: [{userId: String, optionId: Number}],
-    options: [{optionText: String, optionId: Number, numTimesSelected: Number}]
+var UnauthenticatedUser = new Schema({
+	uuid: String
 });
+
 
 console.log("Made Schema");
 
-var PollModel = mongoose.model('PollModel', Poll);
+var UnauthenticatedUser = mongoose.model('UnauthenticatedUser', UnauthenticatedUser);
 
-var Poll1 = new PollModel({
-    name: "Sweet Poll 1",
-    creator:{id: 1, userName: "coolUser1"},
-    participants: [],
-    options: [{optionText: "Sweet Option 1", optionId: 1, numTimesSelected: 0}, {optionText: "Sweet Option 2", optionId: 2, numTimesSelected: 0}]
-});
-Poll1.save(function (err, fluffy) {
-  if (err) return console.error(err);
-  console.log(fluffy);
-});
+var newUnauthenticatedUser = new UnauthenticatedUser({uuid: "0000"});
 
-var Poll2 = new PollModel({
-    name: "Sweet Poll 2",
-    creator:{id: 1, userName: "coolUser1"},
-    participants: [{userId: "59937a0dc7fc560b9fed35fb", optionId: 2}],
-    options: [{optionText: "Sweet Option 1", optionId: 1, numTimesSelected: 0}, {optionText: "Sweet Option 2", optionId: 2, numTimesSelected: 0}]
-});
-Poll2.save(function (err, fluffy) {
-  if (err) return console.error(err);
-  console.log(fluffy);
+newUnauthenticatedUser.save(function(err, result){
+    if(!err){
+        console.log(result);
+    }
 });

@@ -1,5 +1,6 @@
-var userSelection = function(userId, userOption){
+var userSelection = function(userId, uuid, userOption){
     this.userId = userId;
+    this.uuid = uuid;
     this.optionId = userOption;
 };
 
