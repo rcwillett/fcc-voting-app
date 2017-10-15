@@ -70,7 +70,7 @@ module.exports = function (app, passport) {
 		.post(isLoggedIn, BodyParser.json(), pollHandler.addPoll);
 		
 	app.route('/vote')
-		.post(BodyParser.json(), pollHandler.voteOnPoll);
+		.post(CookieParser(), BodyParser.json(), pollHandler.voteOnPoll);
 		
 	app.route('/getUserInfo')
 		.get(isLoggedIn, userHandler.getUserInfo);
