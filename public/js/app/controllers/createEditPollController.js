@@ -35,7 +35,7 @@ angular.module("createPollModule", [])
         }
 
         function addOption() {
-            if (vm.pollOptions[vm.pollOptions.length-1].optionText !== "") {
+            if (vm.pollOptions.length === 0 || vm.pollOptions[vm.pollOptions.length-1].optionText !== "") {
                 var pollOptionId = vm.pollOptions.length;
                 vm.pollOptions.push({ optionId: pollOptionId, optionText: "" });
             }
