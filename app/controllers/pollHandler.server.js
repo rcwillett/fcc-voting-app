@@ -1,8 +1,8 @@
 'use strict';
 
 var Poll = require('../models/polls.js');
-var pollModel = require('../models/general/poll.js');
-var userSelection = require('../models/general/userSelection.js');
+var pollModel = require('../../models/poll.js');
+var userSelection = require('../../models/userSelection.js');
 var UserHandler = require('../controllers/userHandler.server.js');
 
 function PollHandler() {
@@ -57,12 +57,6 @@ function PollHandler() {
 	};
 	this.addPoll = function(req, res) {
 		if (req.user) {
-			// req.body.options.forEach(function(option) {
-			// 	option.numTimesSelected = 0;
-			// });
-			//TODO: Add Poll Validation
-			//var pollValid = validatePoll(req.body);
-			if (true) {
 				var newPoll = new Poll(new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
 				newPoll.save(function(err, savedNewPoll) {
 					if (!err) {
@@ -70,15 +64,9 @@ function PollHandler() {
 						res.json({ pollId: savedNewPoll._id });
 					}
 					else {
-						res.status(500);
-						res.json({ message: "Failed to add poll" })
+						throw err;
 					}
 				});
-			}
-			else {
-				res.status(500);
-				res.json({ message: "Invalid Poll" });
-			}
 		}
 		else {
 			res.json({ message: "User Must Log In" });
@@ -98,10 +86,9 @@ function PollHandler() {
 						req.body.options.forEach(function(option) {
 							option.numTimesSelected = 0;
 						});
-						var newPollInfo = new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options);
-						pollToEdit.name = newPollInfo.name;
-						pollToEdit.description = newPollInfo.description;
-						pollToEdit.options = newPollInfo.options;
+						pollToEdit.name = req.body.name;
+						pollToEdit.description = req.body.description;
+						pollToEdit.options = req.body.options;
 						pollToEdit.participants = [];
 
 

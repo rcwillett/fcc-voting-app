@@ -6,7 +6,7 @@ var cleanCss = require("gulp-clean-css");
 
 //Sources
 var cssSources = ["./public/css/main.css", "./node_modules/bootstrap/dist/css/bootstrap.css"];
-var jsSources = ["./node_modules/jquery/dist/jquery.js", "./node_modules/bootstrap/dist/js/bootstrap.js", "./node_modules/angular/angular.js", "./node_modules/angular-route/angular-route.js", "./node_modules/chart.js/dist/Chart.min.js", "./public/js/app/*.js", "./public/js/app/**/*.js"];
+var jsSources = ["./node_modules/jquery/dist/jquery.js", "./node_modules/bootstrap/dist/js/bootstrap.js", "./node_modules/angular/angular.js", "./node_modules/angular-route/angular-route.js", "./node_modules/chart.js/dist/Chart.min.js", "./models/*.js", "./public/js/app/*.js", "./public/js/app/**/*.js"];
 
 gulp.task("generateSiteCss", function(){
     gulp.src(cssSources)
