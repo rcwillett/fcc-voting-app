@@ -1,8 +1,8 @@
 'use strict';
 
 var Poll = require('../models/polls.js');
-var pollModel = require('../../models/poll.js');
-var userSelection = require('../../models/userSelection.js');
+var pollModel = require('../../common/models/poll.js');
+var userSelection = require('../../common/models/userSelection.js');
 var UserHandler = require('../controllers/userHandler.server.js');
 
 function PollHandler() {

@@ -1,5 +1,5 @@
 var Users = require('../models/users.js');
-var pollInfo = require("../../models/pollInfo.js");
+var pollInfo = require("../../common/models/pollInfo.js");
 
 function UserHandler() {
 
