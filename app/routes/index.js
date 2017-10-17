@@ -12,10 +12,8 @@ module.exports = function (app, passport) {
 		if (req.isAuthenticated()) {
 			return next();
 		} else {
-			res.json({
-				status: 0,
-				message: "You Must Log In To Access This"
-			});
+			res.status(401);
+			res.send("You must login to access this data");
 		}
 	}
 

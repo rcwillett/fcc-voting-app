@@ -3,12 +3,12 @@ var pollInfo = require("../../common/models/pollInfo.js");
 
 function UserHandler() {
 
-    this.getUserInfo = function(req, res) {
+    this.getUserInfo = function(req, res, next) {
         if (req.user) {
             Users.findOne({ '_id': req.user._id })
                 .exec(function(err, result) {
                     if (err) {
-                        throw err;
+                        next(err);
                     }
                     else {
                         res.json(result);
@@ -16,8 +16,7 @@ function UserHandler() {
                 });
         }
         else {
-            res.status(500);
-            res.json({ status: 0, message: "User Not Logged In" });
+            next(new Error("You must login to continue"));
         }
     };
 

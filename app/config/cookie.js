@@ -13,13 +13,13 @@ module.exports = function(req, res, next) {
         var generatedUuid = uuidv4();
         unauthModel.find({ uuid: generatedUuid }, function(err, unauthFindResult) {
             if (err) {
-                throw "DB Unauthenticated Find Error";
+                next(new Error("DB Unauthenticated Find Error"));
             }
             else if (unauthFindResult.length === 0) {
                 var newUnauthUser = new unauthModel({ uuid: generatedUuid });
                 newUnauthUser.save(function(err, saveResult) {
                     if (err) {
-                        throw "DB New Unauthenticated User Error";
+                        next(new Error("DB New Unauthenticated User Error"));
                     }
                     else {
                         setCookie(req, res, saveResult.uuid)

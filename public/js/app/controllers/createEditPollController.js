@@ -70,8 +70,13 @@ angular.module("createPollModule", [])
         }
 
         function failedPollCreation(res) {
-            vm.error = true;
-            vm.errorMessage = res.message;
+            if(res.status === 401 || res.status === 403){
+                window.location.href = "/login";
+            }
+            else{
+                vm.error = true;
+                vm.errorMessage = res.message;
+            }
         }
 
         function pollObject(pollId, pollName, pollDescription, pollOptions) {
