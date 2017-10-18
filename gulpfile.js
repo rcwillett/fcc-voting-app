@@ -1,6 +1,7 @@
 var gulp = require("gulp");
 var gutil = require("gulp-util");
 var gulpConcat = require("gulp-concat");
+var rename = require('gulp-rename');
 var uglify = require("gulp-uglify");
 var cleanCss = require("gulp-clean-css");
 
@@ -17,8 +18,10 @@ gulp.task("generateSiteCss", function(){
 
 gulp.task("generateSiteJs", function(){
     gulp.src(jsSources)
-    .pipe(gulpConcat("site.min.js").on('error', gutil.log))
+    .pipe(gulpConcat("site.js").on('error', gutil.log))
+    .pipe(gulp.dest("./public/js/"))
     .pipe(uglify().on('error', gutil.log))
+    .pipe(rename({extname: '.min.js'}))
     .pipe(gulp.dest("./public/js/"));
 });
 

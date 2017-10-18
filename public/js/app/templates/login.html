@@ -1,0 +1,13 @@
+<div class="row">
+    <div class="col-xs-12">
+        <form ng-submit="vm.submitLoginInfo">
+            <label>Username:</label>
+            <input type="text" placeholder="Enter your username" ng-model="vm.userName" />
+            <label>Password:</label>
+            <input type="hidden" placeholder="Password" ng-model="vm.password" />
+        </form>
+        <div class="error errorMessage text-danger">
+            {{vm.errorMessage}}
+        </div>
+    </div>
+</div>
