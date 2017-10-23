@@ -33,7 +33,7 @@ module.exports = function (app, passport) {
 	app.route('/logout')
 		.get(function (req, res) {
 			req.logout();
-			res.redirect('/login');
+			res.redirect('/');
 		});
 
 	app.route('/profile')
@@ -54,6 +54,9 @@ module.exports = function (app, passport) {
 			successRedirect: '/',
 			failureRedirect: '/login'
 		}));
+		
+	app.route('/isLoggedIn')
+	.get(userHandler.isUserLoggedIn);
 		
 	app.route('/polls')
 		.get(pollHandler.getPolls);

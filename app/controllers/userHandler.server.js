@@ -20,6 +20,17 @@ function UserHandler() {
         }
     };
 
+    this.isUserLoggedIn = function(req, res, next){
+        if(req.user){
+            res.status(200);
+            res.json({status: true});
+        }
+        else{
+            res.status(200);
+            res.json({status: false});
+        }
+    }
+
     // this.addCreatedPoll = function(userId, pollId, pollName) {
     //     return new Promise(function(resolve, reject) {
     //         Users.findOne({ 'github.id': userId }).exec(function(err, result) {
