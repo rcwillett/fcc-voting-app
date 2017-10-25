@@ -1,9 +1,10 @@
-angular.module("loginModule",["loginService"])
-.controller("loginController", ["$rootScope", "loginService", function($rootScope, pollService){
+angular.module("loginControllerModule",["loginServiceModule"])
+.controller("loginController", ["$scope", "$rootScope", "loginService", function($scope, $rootScope, loginService){
+    $scope.vm = {};
     var vm = $scope.vm;
     vm.logInWithGit = logInWithGit;
-    vm.error = false;
-    
+    vm.showError = false;
+    vm.errorMessage = "";
     function logInWithGit(){
         loginService.login().then(loginSuccess, loginFail);
     }

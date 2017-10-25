@@ -1,5 +1,5 @@
 angular.module("loginServiceModule", [])
-.service("loginService", ["$rootscope", "$http", function ($rootScope, $http){
+.service("loginService", ["$rootScope", "$http", function ($rootScope, $http){
     var self = this;
     
     self.login = login;

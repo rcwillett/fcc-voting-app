@@ -52,7 +52,7 @@ module.exports = function (app, passport) {
 	app.route('/auth/github/callback')
 		.get(passport.authenticate('github', {
 			successRedirect: '/',
-			failureRedirect: '/login'
+			failureRedirect: '/#!/login'
 		}));
 		
 	app.route('/isLoggedIn')

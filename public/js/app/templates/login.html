@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-xs-12">
-        <button class="btn btn-primary" ng-click="vm.logInWithGit">Log in with Git</button>
-        <div class="error errorMessage text-danger">
+        <a class="btn btn-primary" href="/auth/github" >Log in with Git</a>
+        <div class="error errorMessage text-danger" ng-show="vm.showError">
             {{vm.errorMessage}}
         </div>
     </div>

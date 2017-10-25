@@ -1,5 +1,5 @@
 (function() {
-    angular.module("menuControllerModule", [])
+    angular.module("menuControllerModule", ["loginServiceModule"])
         .controller("menuController", ["$scope", "$rootScope", "loginService", menuController]);
 
     function menuController($scope, $rootScope) {

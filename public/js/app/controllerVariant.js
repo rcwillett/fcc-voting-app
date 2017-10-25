@@ -1,8 +1,8 @@
-var pollApp = angular.module("pollApp", ["ngRoute", "menuController", "pollControllerModule", "pollsServiceModule", "pollViewControllerModule", "createPollModule", "userPollsControllerModule", "pollStatsControllerModule", "applicationConstants"])
+var pollApp = angular.module("pollApp", ["ngRoute", "menuControllerModule", "loginControllerModule", "pollControllerModule", "pollsServiceModule", "pollViewControllerModule", "createPollModule", "userPollsControllerModule", "pollStatsControllerModule", "applicationConstants"])
     .run(function($rootScope) {
         $rootScope.loggedIn = false;
     })
-    .config(["$routeProvider", function($routeProvider, appConstants) {
+    .config(["$routeProvider", "appConstants", function($routeProvider, appConstants) {
         var onlyLoggedIn = function($location, $q, Auth) {
             var deferred = $q.defer();
             if (Auth.isLogin()) {
@@ -10,7 +10,7 @@ var pollApp = angular.module("pollApp", ["ngRoute", "menuController", "pollContr
             }
             else {
                 deferred.reject();
-                $location.url('/login');
+                $location.url('/!#/login');
             }
             return deferred.promise;
         };

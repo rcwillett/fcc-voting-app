@@ -23,7 +23,7 @@ angular.module("userPollsControllerModule",["pollsServiceModule"])
 
     function errorResp(resp) {
         if (resp.status === 401 || resp.status === 403) {
-            window.location.href = "/login";
+            window.location.href = "/#!/login";
         }
     }
         
