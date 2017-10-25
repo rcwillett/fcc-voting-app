@@ -16,14 +16,11 @@
 </header>
 
 <body ng-app="pollApp">
-	<nav class="nav navbar-default">
+	<nav class="nav navbar-default" ng-controller="menuController">
 		<div class="container">
 		<ul class="nav navbar-nav">
 			<li>
 				<a href="/">Home</a>
-			</li>
-			<li>
-				<a href="/profile">Profile</a>
 			</li>
 			<li>
 				<a href="#!createPoll">Create New Poll</a>
@@ -32,7 +29,8 @@
 				<a href="#!myPolls">My Polls</a>
 			</li>
 			<li class="pull-right">
-				<a href="/logout">Logout</a>
+				<a href="#logout" ng-click="menuVm.logOut(); $event.preventDefault();" ng-show="$root.loggedIn">Log Out</a>
+				<a href="/#!/login" ng-hide="$root.loggedIn">Log In</a>
 			</li>
 		</ul>
 		</div>

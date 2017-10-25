@@ -33,7 +33,8 @@ module.exports = function (app, passport) {
 	app.route('/logout')
 		.get(function (req, res) {
 			req.logout();
-			res.redirect('/');
+			res.status(200);
+			res.send("");
 		});
 
 	app.route('/profile')
@@ -52,7 +53,7 @@ module.exports = function (app, passport) {
 	app.route('/auth/github/callback')
 		.get(passport.authenticate('github', {
 			successRedirect: '/',
-			failureRedirect: '/#!/login'
+			failureRedirect: '/#!/login?error=true'
 		}));
 		
 	app.route('/isLoggedIn')

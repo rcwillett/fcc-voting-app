@@ -47750,7 +47750,6 @@ var pollApp = angular.module("pollApp", ["ngRoute", "menuControllerModule", "log
             });
 
     }]);
-
 angular.module("applicationConstants", [])
 .constant("appConstants", {
     createEditEnum:{
@@ -47758,6 +47757,7 @@ angular.module("applicationConstants", [])
         edit: 1
     }
 });
+
 angular.module("createPollModule", [])
     .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "pollService", "appConstants", function createEditPollController($scope, $timeout, $route, $routeParams, pollService, appConstants) {
         $scope.vm = {};
@@ -47852,12 +47852,12 @@ angular.module("createPollModule", [])
 
     }]);
 angular.module("loginControllerModule",["loginServiceModule"])
-.controller("loginController", ["$scope", "$rootScope", "loginService", function($scope, $rootScope, loginService){
+.controller("loginController", ["$scope", "$rootScope", "$routeParams", "loginService", function($scope, $rootScope, $routeParams, loginService){
     $scope.vm = {};
     var vm = $scope.vm;
     vm.logInWithGit = logInWithGit;
-    vm.showError = false;
-    vm.errorMessage = "";
+    vm.showError = Boolean($routeParams.error);
+    vm.errorMessage = "Login Failed, Please Try Again";
     function logInWithGit(){
         loginService.login().then(loginSuccess, loginFail);
     }
@@ -47872,30 +47872,32 @@ angular.module("loginControllerModule",["loginServiceModule"])
     }
     
 }]);
-(function() {
-    angular.module("menuControllerModule", ["loginServiceModule"])
-        .controller("menuController", ["$scope", "$rootScope", "loginService", menuController]);
+angular.module("menuControllerModule", ["loginServiceModule"])
+    .controller("menuController", ["$scope", "$rootScope", "loginService", function($scope, $rootScope, loginService) {
+        
+        var menuVm = $scope.menuVm = {};
 
-    function menuController($scope, $rootScope) {
-        var menuVm = $scope.menuVm;
-        
         menuVm.logOut = logOut;
-        
-        loginService.isLoggedIn(successResp, failResp);
+
+        loginService.isLoggedIn().then(successResp, notLoggedInResp);
 
         function successResp(resp) {
             $rootScope.loggedIn = resp.status;
         }
 
-        function failResp(resp) {
+        function notLoggedInResp(resp) {
             $rootScope.loggedIn = false;
         }
-        
-        function logOut(){
-            loginService.logOut();
+
+        function logOut() {
+            loginService.logout().then(notLoggedInResp, failResp);
         }
-    }
-})();
+        
+        function failResp(){
+            $rootScope.error = true;
+        }
+        
+    }]);
 
 angular.module("pollStatsControllerModule", ["pollsServiceModule"])
     .controller("pollStatsController", ["$routeParams", "$scope", "$timeout", "pollService", function($routeParams, $scope, $timeout, pollService) {

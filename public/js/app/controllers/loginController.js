@@ -1,10 +1,10 @@
 angular.module("loginControllerModule",["loginServiceModule"])
-.controller("loginController", ["$scope", "$rootScope", "loginService", function($scope, $rootScope, loginService){
+.controller("loginController", ["$scope", "$rootScope", "$routeParams", "loginService", function($scope, $rootScope, $routeParams, loginService){
     $scope.vm = {};
     var vm = $scope.vm;
     vm.logInWithGit = logInWithGit;
-    vm.showError = false;
-    vm.errorMessage = "";
+    vm.showError = Boolean($routeParams.error);
+    vm.errorMessage = "Login Failed, Please Try Again";
     function logInWithGit(){
         loginService.login().then(loginSuccess, loginFail);
     }
