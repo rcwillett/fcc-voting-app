@@ -11,7 +11,7 @@ angular.module("loginControllerModule",["loginServiceModule"])
     
     function loginSuccess(resp){
         $rootScope.loggedIn = true;
-        window.location.href = window.history.length > 0 ? window.history[0] : window.location.origin + "/";
+        window.location.href = "/";
     }
     
     function loginFail(resp){

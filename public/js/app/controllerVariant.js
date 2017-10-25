@@ -1,19 +1,31 @@
 var pollApp = angular.module("pollApp", ["ngRoute", "menuControllerModule", "loginControllerModule", "pollControllerModule", "pollsServiceModule", "pollViewControllerModule", "createPollModule", "userPollsControllerModule", "pollStatsControllerModule", "applicationConstants"])
-    .run(function($rootScope) {
+    .run(["$rootScope", "$location", "loginService", "appConstants", function($rootScope, $location, loginService, appConstants) {
+        
+        $rootScope.loading = true;
         $rootScope.loggedIn = false;
-    })
+        
+        loginService.isLoggedIn().then(successResp, notLoggedInResp);
+
+        $rootScope.$on("$routeChangeStart", function(event, next, current){
+            if($rootScope.loggedIn){
+                return;
+            }
+            else if(appConstants.restrictedRoutes.indexOf(next.current) > -1){
+                $location.path("/login");
+            }
+        });
+
+        function successResp(resp) {
+            $rootScope.loggedIn = resp.status;
+            $rootScope.loading = false;
+        }
+
+        function notLoggedInResp(resp) {
+            $rootScope.loggedIn = false;
+            $rootScope.loading = false;
+        }
+    }])
     .config(["$routeProvider", "appConstants", function($routeProvider, appConstants) {
-        var onlyLoggedIn = function($location, $q, Auth) {
-            var deferred = $q.defer();
-            if (Auth.isLogin()) {
-                deferred.resolve();
-            }
-            else {
-                deferred.reject();
-                $location.url('/!#/login');
-            }
-            return deferred.promise;
-        };
         $routeProvider
             .when("/viewPoll/:pollId", {
                 templateUrl: "/public/js/app/templates/poll.html",
@@ -35,7 +47,7 @@ var pollApp = angular.module("pollApp", ["ngRoute", "menuControllerModule", "log
             })
             .when("/myPolls", {
                 templateUrl: "/public/js/app/templates/userPolls.html",
-                controller: "userPollController"
+                controller: "userPollController",
             })
             .when("/login", {
                 templateUrl: "/public/js/app/templates/login.html",
@@ -45,5 +57,4 @@ var pollApp = angular.module("pollApp", ["ngRoute", "menuControllerModule", "log
                 templateUrl: "/public/js/app/templates/home.html",
                 controller: "pollController"
             });
-
     }]);
