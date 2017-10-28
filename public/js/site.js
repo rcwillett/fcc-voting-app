@@ -47713,13 +47713,13 @@ var pollApp = angular.module("pollApp", ["ngRoute", "menuControllerModule", "log
             if($rootScope.loggedIn){
                 return;
             }
-            else if(appConstants.restrictedRoutes.indexOf(next.current) > -1){
+            else if(next.$$route && appConstants.restrictedRoutes.indexOf(next.$$route.originalPath) > -1){
                 $location.path("/login");
             }
         });
 
         function successResp(resp) {
-            $rootScope.loggedIn = resp.status;
+            $rootScope.loggedIn = resp.data.status;
             $rootScope.loading = false;
         }
 
@@ -47761,116 +47761,7 @@ var pollApp = angular.module("pollApp", ["ngRoute", "menuControllerModule", "log
                 controller: "pollController"
             });
     }]);
-angular.module("applicationConstants", [])
-.constant("appConstants", {
-    createEditEnum:{
-        create: 0,
-        edit: 1
-    },
-    restrictedRoutes:["/myPolls", "/createPoll"]
-});
 
-angular.module("loginServiceModule", [])
-.service("loginService", ["$rootScope", "$http", function ($rootScope, $http){
-    var self = this;
-    
-    self.login = login;
-    
-    self.logout = logout;
-    
-    self.isLoggedIn = isLoggedIn;
-    
-    function login(){
-        return $http.get("/auth/github");
-    }
-    
-    function logout(){
-        return $http.get("/logout");
-    }
-    
-    function isLoggedIn(){
-        return $http.get("/isLoggedIn");
-    }
-    
-    return self;
-}]);
-angular.module("pollsServiceModule", [])
-.service("pollService", ["$http", function ($http){
-    var self = this;
-    
-    self.getPoll = function(id){
-        var url = "/poll/" + id;
-        return $http({
-            method: "GET",
-            url: url
-        });
-    };
-    
-    self.getPolls = function(numItems){
-        var requestObj = {"numItems" : numItems};
-        return $http({
-            method: "GET",
-            url: "/polls",
-            params: requestObj
-        });
-    };
-    
-    self.getUserPolls = function(userId){
-        return $http({
-            method: "GET",
-            url: "/userPolls"
-        }); 
-    };
-    
-    self.createPoll = function(pollObj){
-        var requestData = pollObj;
-        return $http({
-           method: "POST",
-           url: "/addPoll",
-           data: requestData
-        });
-    };
-    
-    self.editPoll = function(pollObj){
-        var requestData = pollObj;
-        return $http({
-           method: "POST",
-           url: "/addPoll",
-           data: requestData
-        });
-    };
-    
-    self.vote = function(pollId, optionId){
-        var requestData = {
-            "pollId": pollId,
-            "optionId": optionId
-        };
-        return $http({
-           method: "POST",
-           url: "/vote",
-           data: requestData,
-           type: "application/json"
-        });
-    };
-    
-    return self;
-}]);
-angular.module("userServiceModule", [])
-    .service("userService", ["$http", function($http) {
-        var self = this;
-
-        self.getUserInfo = getUserInfo;
-
-        function getUserInfo() {
-            var url = "/getUserInfo";
-            return $http({
-                method: "GET",
-                url: url
-            });
-        }
-
-        return self;
-    }]);
 angular.module("createPollModule", [])
     .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "pollService", "appConstants", function createEditPollController($scope, $timeout, $route, $routeParams, pollService, appConstants) {
         $scope.vm = {};
@@ -47993,11 +47884,12 @@ angular.module("menuControllerModule", ["loginServiceModule"])
         menuVm.logOut = logOut;
 
         function logOut() {
-            loginService.logout().then(notLoggedInResp, failResp);
+            loginService.logout().then(logOutSuccess, failResp);
         }
 
         function logOutSuccess() {
             $rootScope.loggedIn = false;
+            window.location.href ="/";
         }
 
         function failResp() {
@@ -48205,3 +48097,112 @@ angular.module("userPollsControllerModule",["pollsServiceModule"])
     }
 
 }]);
+angular.module("applicationConstants", [])
+.constant("appConstants", {
+    createEditEnum:{
+        create: 0,
+        edit: 1
+    },
+    restrictedRoutes:["/myPolls", "/createPoll", "/pollStats", "/editPoll"]
+});
+angular.module("loginServiceModule", [])
+.service("loginService", ["$rootScope", "$http", function ($rootScope, $http){
+    var self = this;
+    
+    self.login = login;
+    
+    self.logout = logout;
+    
+    self.isLoggedIn = isLoggedIn;
+    
+    function login(){
+        return $http.get("/auth/github");
+    }
+    
+    function logout(){
+        return $http.get("/logout");
+    }
+    
+    function isLoggedIn(){
+        return $http.get("/isLoggedIn");
+    }
+    
+    return self;
+}]);
+angular.module("pollsServiceModule", [])
+.service("pollService", ["$http", function ($http){
+    var self = this;
+    
+    self.getPoll = function(id){
+        var url = "/poll/" + id;
+        return $http({
+            method: "GET",
+            url: url
+        });
+    };
+    
+    self.getPolls = function(numItems){
+        var requestObj = {"numItems" : numItems};
+        return $http({
+            method: "GET",
+            url: "/polls",
+            params: requestObj
+        });
+    };
+    
+    self.getUserPolls = function(userId){
+        return $http({
+            method: "GET",
+            url: "/userPolls"
+        }); 
+    };
+    
+    self.createPoll = function(pollObj){
+        var requestData = pollObj;
+        return $http({
+           method: "POST",
+           url: "/addPoll",
+           data: requestData
+        });
+    };
+    
+    self.editPoll = function(pollObj){
+        var requestData = pollObj;
+        return $http({
+           method: "POST",
+           url: "/addPoll",
+           data: requestData
+        });
+    };
+    
+    self.vote = function(pollId, optionId){
+        var requestData = {
+            "pollId": pollId,
+            "optionId": optionId
+        };
+        return $http({
+           method: "POST",
+           url: "/vote",
+           data: requestData,
+           type: "application/json"
+        });
+    };
+    
+    return self;
+}]);
+angular.module("userServiceModule", [])
+    .service("userService", ["$http", function($http) {
+        var self = this;
+
+        self.getUserInfo = getUserInfo;
+
+        function getUserInfo() {
+            var url = "/getUserInfo";
+            return $http({
+                method: "GET",
+                url: url
+            });
+        }
+
+        return self;
+    }]);

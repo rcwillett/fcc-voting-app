@@ -4,5 +4,5 @@ angular.module("applicationConstants", [])
         create: 0,
         edit: 1
     },
-    restrictedRoutes:["/myPolls", "/createPoll"]
+    restrictedRoutes:["/myPolls", "/createPoll", "/pollStats", "/editPoll"]
 });

@@ -10,13 +10,13 @@ var pollApp = angular.module("pollApp", ["ngRoute", "menuControllerModule", "log
             if($rootScope.loggedIn){
                 return;
             }
-            else if(appConstants.restrictedRoutes.indexOf(next.current) > -1){
+            else if(next.$$route && appConstants.restrictedRoutes.indexOf(next.$$route.originalPath) > -1){
                 $location.path("/login");
             }
         });
 
         function successResp(resp) {
-            $rootScope.loggedIn = resp.status;
+            $rootScope.loggedIn = resp.data.status;
             $rootScope.loading = false;
         }
 

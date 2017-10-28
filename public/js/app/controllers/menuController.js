@@ -6,11 +6,12 @@ angular.module("menuControllerModule", ["loginServiceModule"])
         menuVm.logOut = logOut;
 
         function logOut() {
-            loginService.logout().then(notLoggedInResp, failResp);
+            loginService.logout().then(logOutSuccess, failResp);
         }
 
         function logOutSuccess() {
             $rootScope.loggedIn = false;
+            window.location.href ="/";
         }
 
         function failResp() {
