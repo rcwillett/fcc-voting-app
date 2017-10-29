@@ -6,6 +6,9 @@ var path = process.cwd();
 var CookieHandler = require(path + '/app/config/cookie.js');
 var PollHandler = require(path + '/app/controllers/pollHandler.server.js');
 var UserHandler = require(path + '/app/controllers/userHandler.server.js');
+var errorHandler = require(path + '/utilities/errorHandler.js');
+var errorLogger = require(path + '/utilities/errorLogger.js');
+
 module.exports = function (app, passport) {
 
 	function isLoggedIn (req, res, next) {
@@ -76,4 +79,13 @@ module.exports = function (app, passport) {
 		
 	app.route('/getUserInfo')
 		.get(isLoggedIn, userHandler.getUserInfo);
+		
+	//Route who's only purpose is to test error logging
+	app.route('/errorTest')
+	.get(function(req, res, next){
+		next(new Error("Test Error"));	
+	});
+	
+	app.use(errorLogger);
+	app.use(errorHandler);
 };

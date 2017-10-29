@@ -1,10 +1,12 @@
 var fs = require("fs");
+var path = process.cwd();
 
 var errorLogger = function(err, req, res, next) {
     if (!(res.statusCode === 403 || res.statusCode === 401)) {
-        fs.writeFile("error.log", err.toString(), function(writeErr) {
-            if (writeErr)
+        fs.appendFile(path + "/error.log", err.toString() + "\n", function(writeErr) {
+            if (writeErr){
                 next(writeErr);
+            }
             else {
                 next(err);
             }
