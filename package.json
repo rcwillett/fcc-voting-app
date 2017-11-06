@@ -29,6 +29,7 @@
     "express-session": "^1.11.3",
     "gulp-less": "^3.3.2",
     "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.1",
     "mongoose": "^4.1.0",
     "passport": "^0.3.0",
     "passport-github": "^1.0.0"

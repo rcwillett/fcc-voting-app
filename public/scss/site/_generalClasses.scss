@@ -1,0 +1,5 @@
+@each $colour in $theme-colors{
+    .border-bottom-#{nth($colour, 1)}{
+        border-bottom: 1px solid nth($colour, 2);
+    }
+} 

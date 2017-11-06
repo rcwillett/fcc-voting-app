@@ -35154,11 +35154,9 @@ angular.module("createPollModule", [])
                         vm.pollDescription = serverResp.data.pollInfo.description;
                         vm.pollOptions = serverResp.data.pollInfo.options;
                         vm.submitText = "Update Poll";
-                        scopeApply();
                     },
                     function(serverResp) {
                         vm.unexpectedError = true;
-                        scopeApply();
                     }
                 );
             }

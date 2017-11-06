@@ -5,14 +5,17 @@
 <head>
 	<title>Willitt FCC Voting App</title>
 
-	<link href="/public/css/site.min.css" rel="stylesheet" type="text/css">
+	<link href="/public/css/site.css" rel="stylesheet" type="text/css">
 </head>
 
 <body ng-app="pollApp">
 	<div class="app-body" ng-hide="$root.loading">
-	<nav class="nav navbar-default" ng-controller="menuController">
-		<div class="container">
-		<ul class="nav navbar-nav">
+		<nav class="navbar navbar-toggleable-md navbar-light bg-faded" ng-controller="menuController">
+			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+			<div class="navbar-collapse">
+				<ul class="navbar-nav mr-auto">
 			<li>
 				<a href="/">Home</a>
 			</li>
@@ -32,7 +35,7 @@
 	<div class="container">
 		<ng-view></ng-view>
 	</div>
-	<script src="/public/js/site.js"></script>
+	<script src="/public/js/site.min.js"></script>
 	</div>
 	<div class="app-loader-wrap" ng-show="$root.loading">
 		<div class="circle-loader-wrap">
