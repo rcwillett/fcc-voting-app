@@ -1,6 +1,9 @@
 <div class="row">
-    <div class="col-xs-12">
-        <a class="btn btn-primary" href="/auth/github" >Log in with Git</a>
+    <div class="col-12 d-flex flex-column justify-content-center">
+        <a class="d-block w-25" href="/auth/github">
+                <img class="img w-100" src="/public/img/GitHub-Mark.png" />
+            </a>
+        <a class="btn btn-lg btn-primary w-50" href="/auth/github">Log in with Git</a>
         <div class="error errorMessage text-danger" ng-show="vm.showError">
             {{vm.errorMessage}}
         </div>

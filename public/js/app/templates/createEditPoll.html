@@ -1,28 +1,30 @@
 <div class="container">
     <div class="row">
-        <div class="col-xs-12">
-            <h1>Create/Edit Poll</h1>
-            <p>Name of Poll:</p>
+        <div class="col-12">
+            <h1 class="mt-3 mb-3">Create/Edit Poll</h1>
+        </div>
+        <div class="col-12">
+             <p>Name of Poll:</p>
             <input ng-model="vm.pollTitle" type="text" placeholder="Enter Poll Title"/>
         </div>
-        <div class="col-xs-12">
+        <div class="col-12">
             <p>Poll Description</p>
             <textarea ng-model="vm.pollDescription" placeholder="Enter Poll Description"/>
         </div>
-        <div class="col-xs-12">
+        <div class="col-12">
             <h3>Current Poll Options:</h3>
             <div class="row" ng-repeat="option in vm.pollOptions track by $index">
-                <div class="col-xs-12">
+                <div class="col-12">
                     <input ng-model="option.optionText" placeholder="Enter Option Text" /><button ng-click="vm.removeOption(option.optionId)">Remove Option</button>
                 </div>
             </div>
         </div>
-        <div class="col-xs-12">
+        <div class="col-12">
             <form ng-submit="vm.addOption()">
                 <input type="submit" value="Add Option" />
             </form>
         </div>
-        <div class="col-xs-12">
+        <div class="col-12">
             <button ng-click="vm.submitPoll()">{{vm.submitText}}</button>
         </div>
     </div>
