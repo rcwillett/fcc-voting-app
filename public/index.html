@@ -4,38 +4,41 @@
 
 <head>
 	<title>Willitt FCC Voting App</title>
-
 	<link href="/public/css/site.css" rel="stylesheet" type="text/css">
 </head>
 
 <body ng-app="pollApp">
 	<div class="app-body" ng-hide="$root.loading">
-		<nav class="navbar navbar-toggleable-md navbar-light bg-faded" ng-controller="menuController">
-			<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+			<div class="container">
+				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-			<div class="navbar-collapse">
-				<ul class="navbar-nav mr-auto">
-			<li>
-				<a href="/">Home</a>
-			</li>
-			<li>
-				<a href="#!createPoll">Create New Poll</a>
-			</li>
-			<li>
-				<a href="#!myPolls">My Polls</a>
-			</li>
-			<li class="pull-right">
-				<a href="#logout" ng-click="menuVm.logOut(); $event.preventDefault();" ng-show="$root.loggedIn">Log Out</a>
-				<a href="/#!/login" ng-hide="$root.loggedIn">Log In</a>
-			</li>
-		</ul>
+				<a class="navbar-brand" href="#">Ross' FCC Voting App</a>
+
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mr-auto nav-justified w-100">
+						<li class="nav-item">
+							<a class="nav-link" href="/">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#!createPoll">Create New Poll</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#!myPolls">My Polls</a>
+						</li>
+						<li class="nav-item pull-right">
+							<a class="nav-link" href="#logout" ng-click="menuVm.logOut(); $event.preventDefault();" ng-show="$root.loggedIn">Log Out</a>
+							<a class="nav-link" href="/#!/login" ng-hide="$root.loggedIn">Log In</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="container">
+			<ng-view></ng-view>
 		</div>
-	</nav>
-	<div class="container">
-		<ng-view></ng-view>
-	</div>
-	<script src="/public/js/site.min.js"></script>
+		<script src="/public/js/site.min.js"></script>
 	</div>
 	<div class="app-loader-wrap" ng-show="$root.loading">
 		<div class="circle-loader-wrap">

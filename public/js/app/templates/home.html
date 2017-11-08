@@ -1,14 +1,20 @@
 <h1>All polls</h1>
 <div class="row">
-    <div class="hidden-xs col-sm-12 border-bottom-primary">
-        <div class="col-xs-6 col-md-4"><div class="h3">Poll Name:</div></div>
-        <div class="col-xs-6 col-md-4"><div class="h3">Poll Creator:</div></div>
-    </div>
-    <div class="col-xs-12 border-bottom-secondary" ng-repeat="poll in pollArray">
+    <div class="hidden-xs col-12 border-bottom-primary">
         <div class="row">
-            <div class="col-xs-6 col-md-4"><span class="visible-xs">Poll Name: </span> {{poll.name}}</div>
-            <div class="col-xs-6 col-md-4"><span class="visible-xs">Poll Creator: </span>{{poll.creator.userName}}</div>
-            <div class="col-xs-12 col-md-4"><a class="btn btn-primary fill-width" href="#!/viewPoll/{{poll._id}}">Go to poll</a></div>
+            <div class="col-6 col-md-4">
+                <div class="h3">Poll Name:</div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="h3">Poll Creator:</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 border-bottom-secondary" ng-repeat="poll in pollArray">
+        <div class="row">
+            <div class="col-6 col-md-4"><span class="visible-xs">Poll Name: </span> {{poll.name}}</div>
+            <div class="col-6 col-md-4"><span class="visible-xs">Poll Creator: </span>{{poll.creator.userName}}</div>
+            <div class="col-12 col-md-4"><a class="btn btn-primary fill-width" href="#!/viewPoll/{{poll._id}}">Go to poll</a></div>
         </div>
     </div>
 </div>
