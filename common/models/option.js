@@ -4,4 +4,6 @@ var optionModel = function(optionObject){
     this.numTimesSelected = 0;
 };
 
-module.exports = optionModel;
+if ( module != null && module.exports) {
+    module.exports = optionModel;
+}

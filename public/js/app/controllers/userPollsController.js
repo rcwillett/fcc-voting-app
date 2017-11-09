@@ -5,26 +5,27 @@ angular.module("userPollsControllerModule",["pollsServiceModule"])
     vm.loading = true;
     vm.error = false;
     vm.pollArray = [];
-    
+
     vm.generateStatsLink = generateStatsLink;
-    
+
     vm.generateEditLink = generateEditLink;
-    
+
     initData();
-    
-    function initData(){
+
+    function initData() {
         pollsService.getUserPolls().then(successResp, errorResp);
     }
-    
+
     function successResp(resp) {
         vm.pollArray = resp.data;
         vm.loading = false;
     }
 
-    function errorResp(resp){
-        
+    function errorResp(resp) {
+        if (resp.status === 401 || resp.status === 403) {
+            window.location.href = "/#!/login";
+        }
     }
-    
         
     function generateEditLink(pollId){
         return '#!editPoll/' + pollId;

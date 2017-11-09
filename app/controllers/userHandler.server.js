@@ -1,14 +1,14 @@
 var Users = require('../models/users.js');
-var pollInfo = require("../models/general/pollInfo.js");
+var pollInfo = require("../../common/models/pollInfo.js");
 
 function UserHandler() {
 
-    this.getUserInfo = function(req, res) {
+    this.getUserInfo = function(req, res, next) {
         if (req.user) {
             Users.findOne({ '_id': req.user._id })
                 .exec(function(err, result) {
                     if (err) {
-                        throw err;
+                        next(err);
                     }
                     else {
                         res.json(result);
@@ -16,10 +16,20 @@ function UserHandler() {
                 });
         }
         else {
-            res.status(500);
-            res.json({ status: 0, message: "User Not Logged In" });
+            next(new Error("You must login to continue"));
         }
     };
+
+    this.isUserLoggedIn = function(req, res, next){
+        if(req.user){
+            res.status(200);
+            res.json({status: true});
+        }
+        else{
+            res.status(200);
+            res.json({status: false});
+        }
+    }
 
     // this.addCreatedPoll = function(userId, pollId, pollName) {
     //     return new Promise(function(resolve, reject) {

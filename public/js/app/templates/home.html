@@ -1,8 +1,20 @@
-<h1>All polls</h1>
-<ul ng-repeat="poll in pollArray">
-    <li>
-        <p>Poll Name: {{poll.name}}</p>
-        <p>Poll Creator: {{poll.creator.userName}}</p>
-        <a href="#!/viewPoll/{{poll._id}}">Go to poll</a>
-    </li>
-</ul>
+<h1 class="mt-3 mb-3">All polls</h1>
+<div class="row">
+    <div class="hidden-xs col-12 border-bottom border-bottom-primary">
+        <div class="row">
+            <div class="col-6 col-md-4">
+                <div class="h3">Poll Name:</div>
+            </div>
+            <div class="col-6 col-md-4">
+                <div class="h3">Poll Creator:</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12 border-bottom border-bottom-secondary mt-2 mb-2" ng-repeat="poll in pollArray">
+        <div class="row">
+            <div class="col-6 col-md-4 pt-1 pb-1"><div class="d-sm-none">Poll Name: </div> {{poll.name}}</div>
+            <div class="col-6 col-md-4 pt-1 pb-1"><div class="d-sm-none">Poll Creator: </div>{{poll.creator.userName}}</div>
+            <div class="col-12 col-md-4 pb-1"><a class="btn btn-primary w-100" href="#!/viewPoll/{{poll._id}}">Go to poll</a></div>
+        </div>
+    </div>
+</div>

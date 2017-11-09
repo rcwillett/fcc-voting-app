@@ -3,5 +3,6 @@ angular.module("applicationConstants", [])
     createEditEnum:{
         create: 0,
         edit: 1
-    }
+    },
+    restrictedRoutes:["/myPolls", "/createPoll", "/pollStats", "/editPoll"]
 });

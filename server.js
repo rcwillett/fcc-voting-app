@@ -5,6 +5,8 @@ var routes = require('./app/routes/index.js');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
+var errorHandler = require('./utilities/errorHandler.js');
+var errorLogger = require('./utilities/errorLogger.js');
 
 var app = express();
 require('dotenv').load();
@@ -27,6 +29,9 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(errorLogger);
+app.use(errorHandler);
 
 routes(app, passport);
 

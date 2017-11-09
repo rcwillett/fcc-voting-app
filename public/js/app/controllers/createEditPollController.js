@@ -2,7 +2,10 @@ angular.module("createPollModule", [])
     .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "pollService", "appConstants", function createEditPollController($scope, $timeout, $route, $routeParams, pollService, appConstants) {
         $scope.vm = {};
         var vm = $scope.vm;
-
+        vm.addOption = addOption;
+        vm.removeOption = removeOption;
+        vm.submitPoll = submitPoll;
+        
         initData();
 
         function initData() {
@@ -14,11 +17,9 @@ angular.module("createPollModule", [])
                         vm.pollDescription = serverResp.data.pollInfo.description;
                         vm.pollOptions = serverResp.data.pollInfo.options;
                         vm.submitText = "Update Poll";
-                        scopeApply();
                     },
                     function(serverResp) {
                         vm.unexpectedError = true;
-                        scopeApply();
                     }
                 );
             }
@@ -29,9 +30,7 @@ angular.module("createPollModule", [])
                 vm.pollOptions = [];
                 vm.submitText = "Create Poll";
             }
-            vm.addOption = addOption;
-            vm.removeOption = removeOption;
-            vm.submitPoll = submitPoll;
+            scopeApply();
         }
 
         function addOption() {
@@ -43,7 +42,6 @@ angular.module("createPollModule", [])
                 vm.showError = "Please Fill Out Before Adding New Poll Item"
             }
             scopeApply();
-
         }
 
         function removeOption(optionId) {
@@ -70,8 +68,13 @@ angular.module("createPollModule", [])
         }
 
         function failedPollCreation(res) {
-            vm.error = true;
-            vm.errorMessage = res.message;
+            if(res.status === 401 || res.status === 403){
+                window.location.href = "/login";
+            }
+            else{
+                vm.error = true;
+                vm.errorMessage = res.message;
+            }
         }
 
         function pollObject(pollId, pollName, pollDescription, pollOptions) {

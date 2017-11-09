@@ -1,0 +1,21 @@
+.app-loader-wrap{
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    .circle-loader-wrap{
+        position: relative;
+        height: $loader-size;
+        width: $loader-size;
+    }
+    .circle-loader{
+        position:absolute;
+        height: 100%;
+        width: 100%;
+        border-top: $loader-border;
+        border-left: $loader-border;
+        border-right: $loader-border;
+        border-radius: 50%;
+    }
+}

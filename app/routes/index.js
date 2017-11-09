@@ -6,16 +6,17 @@ var path = process.cwd();
 var CookieHandler = require(path + '/app/config/cookie.js');
 var PollHandler = require(path + '/app/controllers/pollHandler.server.js');
 var UserHandler = require(path + '/app/controllers/userHandler.server.js');
+var errorHandler = require(path + '/utilities/errorHandler.js');
+var errorLogger = require(path + '/utilities/errorLogger.js');
+
 module.exports = function (app, passport) {
 
 	function isLoggedIn (req, res, next) {
 		if (req.isAuthenticated()) {
 			return next();
 		} else {
-			res.json({
-				status: 0,
-				message: "You Must Log In To Access This"
-			});
+			res.status(401);
+			res.send("You must login to access this data");
 		}
 	}
 
@@ -35,7 +36,8 @@ module.exports = function (app, passport) {
 	app.route('/logout')
 		.get(function (req, res) {
 			req.logout();
-			res.redirect('/login');
+			res.status(200);
+			res.send("");
 		});
 
 	app.route('/profile')
@@ -54,8 +56,11 @@ module.exports = function (app, passport) {
 	app.route('/auth/github/callback')
 		.get(passport.authenticate('github', {
 			successRedirect: '/',
-			failureRedirect: '/login'
+			failureRedirect: '/#!/login?error=true'
 		}));
+		
+	app.route('/isLoggedIn')
+	.get(userHandler.isUserLoggedIn);
 		
 	app.route('/polls')
 		.get(pollHandler.getPolls);
@@ -74,4 +79,13 @@ module.exports = function (app, passport) {
 		
 	app.route('/getUserInfo')
 		.get(isLoggedIn, userHandler.getUserInfo);
+		
+	//Route who's only purpose is to test error logging
+	app.route('/errorTest')
+	.get(function(req, res, next){
+		next(new Error("Test Error"));	
+	});
+	
+	app.use(errorLogger);
+	app.use(errorHandler);
 };
