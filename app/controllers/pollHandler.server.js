@@ -70,6 +70,7 @@ function PollHandler() {
 				});
 		}
 		else {
+			res.status(401);
 			next(new Error("1"));
 		}
 	};
@@ -95,12 +96,11 @@ function PollHandler() {
 
 						pollToEdit.save(function(err, updatedPoll) {
 							if (err) {
-								throw err;
+								next(err);
 							}
 							else {
 								res.status(200);
 								res.json({ status: 0, message: "Poll Edit Successful" });
-
 							}
 						});
 					}
@@ -119,8 +119,7 @@ function PollHandler() {
 				var selectedOption,
 					userVoted = false;
 				if (err || votingPoll == null) {
-					res.status(500);
-					res.send("Poll Not Found");
+					next( new Error(err || "Poll Not Found"));
 				}
 				else {
 					if (req.user) {
@@ -162,8 +161,7 @@ function PollHandler() {
 				function savePoll() {
 					votingPoll.save(function(err, updatedPoll) {
 						if (err) {
-							res.status(500);
-							res.send("Unexpected Error Occured")
+							next(new Error(err));
 						}
 						else {
 							res.status(200);

@@ -1,11 +1,12 @@
 <div class="container">
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>My Polls</h1>
-            <div ng-repeat="poll in vm.pollArray track by $index">
-                {{poll.name}}
-                <a class="btn btn-default" href="{{vm.generateStatsLink(poll._id)}}">View Stats</a>
-                <a class="btn btn-default" href="{{vm.generateEditLink(poll._id)}}">Edit Poll</a>
+        <h1 class="mt-3 mb-3">My Polls</h1>
+        <div class="row mb-3" ng-repeat="poll in vm.pollArray track by $index">
+            <div class="col-12 col-sm-4 h4">{{poll.name}}</div>
+            <div class="col-12 col-sm-4">
+                <a class="btn btn-primary w-100" href="{{vm.generateStatsLink(poll._id)}}">View Stats</a>
+            </div>
+            <div class="col-12 col-sm-4">
+                <a class="btn btn-primary w-100" href="{{vm.generateEditLink(poll._id)}}">Edit Poll</a>
             </div>
         </div>
     </div>

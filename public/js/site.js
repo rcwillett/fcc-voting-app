@@ -35174,12 +35174,13 @@ angular.module("createPollModule", [])
         }
 
         function addOption() {
+            vm.errorMsg = "";
             if (vm.pollOptions.length === 0 || vm.pollOptions[vm.pollOptions.length-1].optionText !== "") {
                 var pollOptionId = vm.pollOptions.length;
                 vm.pollOptions.push({ optionId: pollOptionId, optionText: "" });
             }
             else {
-                vm.showError = "Please Fill Out Before Adding New Poll Item"
+                vm.errorMsg = "The poll option text must not be empty before adding another option"
             }
             scopeApply();
         }
@@ -35193,13 +35194,17 @@ angular.module("createPollModule", [])
         }
 
         function submitPoll() {
-            if ($route.current.$$route.createEdit === appConstants.createEditEnum.edit) {
+            vm.errorMsg = "";
+            if (vm.pollOptions.length > 1 && $route.current.$$route.createEdit === appConstants.createEditEnum.edit) {
                 pollService.editPoll(new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
                     .then(successfulPollCreation, failedPollCreation);
             }
-            else {
+            else if(vm.pollOptions.length > 1) {
                 pollService.createPoll(new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
                     .then(successfulPollCreation, failedPollCreation);
+            }
+            else{
+                vm.errorMsg = "You must have at least one option for your poll";
             }
         }
 
@@ -35209,7 +35214,7 @@ angular.module("createPollModule", [])
 
         function failedPollCreation(res) {
             if(res.status === 401 || res.status === 403){
-                window.location.href = "/login";
+                window.location.href = "/#!/login";
             }
             else{
                 vm.error = true;
