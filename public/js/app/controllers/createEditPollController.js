@@ -42,7 +42,6 @@ angular.module("createPollModule", [])
             else {
                 vm.errorMsg = "The poll option text must not be empty before adding another option"
             }
-            scopeApply();
         }
 
         function removeOption(optionId) {
