@@ -1,13 +1,13 @@
 'use strict';
 
-var BodyParser = require("body-parser");
-var CookieParser = require('cookie-parser');
-var path = process.cwd();
-var CookieHandler = require(path + '/app/config/cookie.js');
-var PollHandler = require(path + '/app/controllers/pollHandler.server.js');
-var UserHandler = require(path + '/app/controllers/userHandler.server.js');
-var errorHandler = require(path + '/utilities/errorHandler.js');
-var errorLogger = require(path + '/utilities/errorLogger.js');
+const BodyParser = require("body-parser");
+const CookieParser = require('cookie-parser');
+const path = process.cwd();
+const CookieHandler = require(path + '/app/config/cookie.js');
+const PollHandler = require(path + '/app/services/pollHandler.server.js');
+const UserHandler = require(path + '/app/services/userHandler.server.js');
+const errorHandler = require(path + '/utilities/errorHandler.js');
+const errorLogger = require(path + '/utilities/errorLogger.js');
 
 module.exports = function (app, passport) {
 
@@ -20,8 +20,8 @@ module.exports = function (app, passport) {
 		}
 	}
 
-	var pollHandler = new PollHandler();
-	var userHandler = new UserHandler();
+	const pollHandler = new PollHandler();
+	const userHandler = new UserHandler();
 
 	app.route('/')
 		.get(CookieParser(), CookieHandler, function (req, res) {

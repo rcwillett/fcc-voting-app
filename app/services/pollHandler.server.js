@@ -1,9 +1,9 @@
 'use strict';
 
-var Poll = require('../models/polls.js');
-var pollModel = require('../../common/models/poll.js');
-var userSelection = require('../../common/models/userSelection.js');
-var UserHandler = require('../controllers/userHandler.server.js');
+const Poll = require('../models/polls.js');
+const pollModel = require('../../common/models/poll.js');
+const userSelection = require('../../common/models/userSelection.js');
+const UserHandler = require('../services/userHandler.server.js');
 
 function PollHandler() {
 

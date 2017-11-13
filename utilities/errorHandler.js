@@ -1,5 +1,5 @@
 
-var errorHandler = function(err, req, res, next) {
+const errorHandler = function(err, req, res, next) {
         if (err) {
             if (!(res.statusCode === 403 || res.statusCode === 401)) {
                 console.warn(res.statusCode);
