@@ -35129,7 +35129,6 @@ var pollApp = angular.module("pollApp", ["ngRoute", "menuControllerModule", "log
                 controller: "pollController"
             });
     }]);
-
 angular.module("applicationConstants", [])
 .constant("appConstants", {
     createEditEnum:{
@@ -35138,6 +35137,122 @@ angular.module("applicationConstants", [])
     },
     restrictedRoutes:["/myPolls", "/createPoll", "/pollStats", "/editPoll"]
 });
+
+angular.module("loginServiceModule", [])
+.service("loginService", ["$rootScope", "$http", function ($rootScope, $http){
+    var self = this;
+    
+    self.login = login;
+    
+    self.logout = logout;
+    
+    self.isLoggedIn = isLoggedIn;
+    
+    function login(){
+        return $http.get("/auth/github");
+    }
+    
+    function logout(){
+        return $http.get("/logout");
+    }
+    
+    function isLoggedIn(){
+        return $http.get("/isLoggedIn");
+    }
+    
+    return self;
+}]);
+angular.module("pollsServiceModule", [])
+.service("pollService", ["$http", function ($http){
+    var self = this;
+    
+    self.getPoll = function(id){
+        var url = "/poll/" + id;
+        return $http({
+            method: "GET",
+            url: url
+        });
+    };
+    
+    self.getPolls = function(numItems){
+        var requestObj = {"numItems" : numItems};
+        return $http({
+            method: "GET",
+            url: "/polls",
+            params: requestObj
+        });
+    };
+    
+    self.getUserPolls = function(userId){
+        return $http({
+            method: "GET",
+            url: "/userPolls"
+        }); 
+    };
+    
+    self.createPoll = function(pollObj) {
+        var requestData = pollObj;
+        return $http({
+            method: "POST",
+            url: "/addPoll",
+            data: requestData
+        });
+    };
+
+    self.editPoll = function(pollObj) {
+        var requestData = pollObj;
+        return $http({
+            method: "POST",
+            url: "/addPoll",
+            data: requestData
+        });
+    };
+
+    self.addPollOption = function(pollId, option) {
+        var requestData = {
+            "pollId": pollId,
+            "pollOption": option
+        };
+        
+        return $http({
+            method: "POST",
+            url: "/vote",
+            data: requestData,
+            type: "application/json"
+        });
+    }
+    
+    self.vote = function(pollId, optionId){
+        var requestData = {
+            "pollId": pollId,
+            "optionId": optionId
+        };
+        return $http({
+           method: "POST",
+           url: "/vote",
+           data: requestData,
+           type: "application/json"
+        });
+    };
+    
+    return self;
+}]);
+angular.module("userServiceModule", [])
+    .service("userService", ["$http", function($http) {
+        var self = this;
+
+        self.getUserInfo = getUserInfo;
+
+        function getUserInfo() {
+            var url = "/getUserInfo";
+            return $http({
+                method: "GET",
+                url: url
+            });
+        }
+
+        return self;
+    }]);
 angular.module("createPollModule", [])
     .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "pollService", "appConstants", function createEditPollController($scope, $timeout, $route, $routeParams, pollService, appConstants) {
         $scope.vm = {};
@@ -35182,7 +35297,6 @@ angular.module("createPollModule", [])
             else {
                 vm.errorMsg = "The poll option text must not be empty before adding another option"
             }
-            scopeApply();
         }
 
         function removeOption(optionId) {
@@ -35403,32 +35517,81 @@ angular.module("pollStatsControllerModule", ["pollsServiceModule"])
     }]);
 
 angular.module("pollViewControllerModule", ["pollsServiceModule"])
-    .controller("pollViewController", ["$routeParams", "$scope", "$timeout", "pollService", function($routeParams, $scope, $timeout, pollService) {
+    .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "pollService", function($routeParams, $scope, $rootScope, $timeout, pollService) {
         $scope.vm = {};
+
         var vm = $scope.vm;
-        vm.unexpectedError = false;
-        if ($routeParams.pollId != null && $routeParams.pollId !== "") {
-            pollService.getPoll($routeParams.pollId).then(
-                function(serverResp) {
-                    vm.poll = serverResp.data.pollInfo;
-                    vm.selectedOption = serverResp.data.userSelection ? serverResp.data.userSelection : "";
-                    $timeout(function(){$scope.$apply();});
-                },
-                function(serverResp) {
-                    vm.unexpectedError = true;
-                }
-            );
-        }
-        else {
-            window.location.href = "/404";
+
+        initViewModel();
+
+        function initViewModel() {
+
+            vm.unexpectedError = false;
+            vm.newOptionFormVisible = false;
+            vm.submitSelection = submitSelection;
+            vm.submitNewOption = submitNewOption;
+            vm.addNewOption = addNewOption;
+            vm.inputValidationPattern = /^[\W\S_]/;
+            vm.newPollOption = "";
+
+            if ($routeParams.pollId != null && $routeParams.pollId !== "") {
+                pollService.getPoll($routeParams.pollId).then(getPollSuccess, requestFailure);
+            }
+            else {
+                window.location.href = "/404";
+            }
         }
 
-        vm.submitSelection = function() {
-                pollService.vote($routeParams.pollId, vm.selectedOption)
-            .then(function(resp){
-                console.log(resp);
-            });
-        };
+        function getPollSuccess(serverResp) {
+            vm.poll = serverResp.data.pollInfo;
+            vm.selectedOption = serverResp.data.userSelection ? serverResp.data.userSelection : "";
+        }
+
+        function submitSelection() {
+            pollService.vote($routeParams.pollId, vm.selectedOption)
+                .then(function(resp) {
+                    console.log(resp);
+                });
+        }
+
+        function submitNewOption() {
+            var newOptionId = vm.poll.options.length + 1;
+            console.log($scope.newOptionForm);
+            console.log($scope.newOptionForm.newPollOption.$error);
+            console.log($scope.newOptionForm.$submitted && ($scope.newOptionForm.newPollOption.$error.required || $scope.newOptionForm.newPollOption.$error.pattern));
+            if (!$scope.newOptionForm.newPollOption.$error.required && ! $scope.newOptionForm.newPollOption.$error.pattern) {
+                pollService.addPollOption($routeParams.pollId, { optionId: newOptionId, optionText: vm.newPollOption }).then(newOptionSuccess, requestFailure);
+            }
+        }
+
+        function newOptionSuccess(resp) {
+            vm.newOptionFormVisible = false;
+            displaySuccessMessage();
+        }
+
+        function displaySuccessMessage(message) {
+            vm.successMessageVisible = true;
+            vm.successMessage = message;
+            $timeout(function() {
+                vm.successMessage = message;
+                vm.successMessageVisible = false;
+            }, 5000);
+        }
+
+        function addNewOption() {
+            if ($rootScope.loggedIn) {
+                showNewOptionForm();
+            }
+        }
+
+        function showNewOptionForm() {
+            vm.newOptionFormVisible = true;
+        }
+
+        function requestFailure(resp) {
+            vm.unexpectedError = true;
+        }
+
     }]);
 
 angular.module("pollControllerModule",["pollsServiceModule"])
@@ -35476,104 +35639,3 @@ angular.module("userPollsControllerModule",["pollsServiceModule"])
     }
 
 }]);
-angular.module("loginServiceModule", [])
-.service("loginService", ["$rootScope", "$http", function ($rootScope, $http){
-    var self = this;
-    
-    self.login = login;
-    
-    self.logout = logout;
-    
-    self.isLoggedIn = isLoggedIn;
-    
-    function login(){
-        return $http.get("/auth/github");
-    }
-    
-    function logout(){
-        return $http.get("/logout");
-    }
-    
-    function isLoggedIn(){
-        return $http.get("/isLoggedIn");
-    }
-    
-    return self;
-}]);
-angular.module("pollsServiceModule", [])
-.service("pollService", ["$http", function ($http){
-    var self = this;
-    
-    self.getPoll = function(id){
-        var url = "/poll/" + id;
-        return $http({
-            method: "GET",
-            url: url
-        });
-    };
-    
-    self.getPolls = function(numItems){
-        var requestObj = {"numItems" : numItems};
-        return $http({
-            method: "GET",
-            url: "/polls",
-            params: requestObj
-        });
-    };
-    
-    self.getUserPolls = function(userId){
-        return $http({
-            method: "GET",
-            url: "/userPolls"
-        }); 
-    };
-    
-    self.createPoll = function(pollObj){
-        var requestData = pollObj;
-        return $http({
-           method: "POST",
-           url: "/addPoll",
-           data: requestData
-        });
-    };
-    
-    self.editPoll = function(pollObj){
-        var requestData = pollObj;
-        return $http({
-           method: "POST",
-           url: "/addPoll",
-           data: requestData
-        });
-    };
-    
-    self.vote = function(pollId, optionId){
-        var requestData = {
-            "pollId": pollId,
-            "optionId": optionId
-        };
-        return $http({
-           method: "POST",
-           url: "/vote",
-           data: requestData,
-           type: "application/json"
-        });
-    };
-    
-    return self;
-}]);
-angular.module("userServiceModule", [])
-    .service("userService", ["$http", function($http) {
-        var self = this;
-
-        self.getUserInfo = getUserInfo;
-
-        function getUserInfo() {
-            var url = "/getUserInfo";
-            return $http({
-                method: "GET",
-                url: url
-            });
-        }
-
-        return self;
-    }]);

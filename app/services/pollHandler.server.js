@@ -110,8 +110,31 @@ function PollHandler() {
 			res.status(401);
 			next(new Error("Login Required to access"));
 		}
-	}
+	};
 
+	this.addPollOption = function(req, res, next) {
+		if (req.user) {
+			Poll.findOne({ '_id': req.body.pollId })
+			.exec(function(err, pollToEdit){
+				if (err) { next(err); }
+				else{
+					pollToEdit.options.push(req.body.pollOption);
+					pollToEdit.save(function(err, result){
+						if(err){ next(err);}
+						else{
+							res.status(200);
+							res.json({ status: 0, message: "Poll Option Addition Successful" });
+						}
+					});
+				}
+			});
+		}
+		else {
+			res.status(401);
+			next(new Error("Login Required to access"));
+		}
+	};
+	
 	this.voteOnPoll = function(req, res, next) {
 		var cookie = req.cookies.WillittFccVote;
 		Poll.findOne({ '_id': req.body.pollId },
@@ -171,7 +194,7 @@ function PollHandler() {
 				}
 			}
 		);
-	}
+	};
 
 	function adjustOption(pollOptions, selectedId, adjustment) {
 		for (var i = 0; i < pollOptions.length; i++) {

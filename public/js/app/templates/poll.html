@@ -1,12 +1,28 @@
 <h1>{{vm.poll.name}}<br /><small>Created By: {{vm.poll.creator.userName}}</small></h1>
 <div class="row">
-    <form ng-submit="vm.submitSelection()">
-        <select ng-options="poll.optionId as poll.optionText for poll in vm.poll.options track by poll.optionId" ng-model="vm.selectedOption">
+    <div class="col-12">
+        <form ng-submit="vm.submitSelection()">
+            <select ng-options="poll.optionId as poll.optionText for poll in vm.poll.options track by poll.optionId" ng-model="vm.selectedOption">
         <option value="">Select your option</option>
     </select>
-        <input class="btn btn-primary" value="Submit Selection" type="submit" />
-    </form>
-    <button class="btn btn-primary" type="submit" value="Add Option" ng-click="vm.addOption" />
+            <input class="btn btn-primary" value="Submit Selection" type="submit" />
+        </form>
+    </div>
+    <div class="col-12" ng-show="vm.newOptionFormVisible">
+        <form name="newOptionForm" ng-submit="vm.submitNewOption();" novalidate="true">
+            <input name="newPollOption" class="form-control" ng-model="vm.newPollOption" ng-pattern="vm.inputValidationPattern" required="required" />
+            <input class="btn btn-primary" type="submit" value="Submit Option" />
+        </form>
+        <div class="errorMsg" ng-show="$scope.newOptionForm.$submitted && ($scope.newOptionForm.newPollOption.$error.required || $scope.newOptionForm.newPollOption.$error.pattern)">
+            Please enter an alphanumeric input
+        </div>
+    </div>
+    <div class="successMessage" ng-show="vm.successMessageVisible">
+        {{vm.successMessage}}
+    </div>
+    <div class="col-12">
+        <button class="btn btn-primary" ng-click="vm.addNewOption();">Add Option</button>
+    </div>
 </div>
 <div class="row">
     <h3>Share on social Media!</h3>
