@@ -71,6 +71,7 @@ angular.module("pollViewControllerModule", ["pollsServiceModule"])
         }
 
         function requestFailure(resp) {
+            console.error(resp);
             vm.unexpectedError = true;
         }
 

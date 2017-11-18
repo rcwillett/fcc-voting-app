@@ -52,7 +52,7 @@ angular.module("pollsServiceModule", [])
         
         return $http({
             method: "POST",
-            url: "/vote",
+            url: "/addPollOption",
             data: requestData,
             type: "application/json"
         });

@@ -20,7 +20,7 @@
     <div class="successMessage" ng-show="vm.successMessageVisible">
         {{vm.successMessage}}
     </div>
-    <div class="col-12">
+    <div class="col-12" ng-hide="vm.newOptionFormVisible">
         <button class="btn btn-primary" ng-click="vm.addNewOption();">Add Option</button>
     </div>
 </div>

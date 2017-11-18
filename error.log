@@ -11,3 +11,10 @@ Error: ENOENT: no such file or directory, stat '/home/ubuntu/workspace/public/lo
 ValidationError: description: Path `description` is required., name: Path `name` is required.Time: Fri Nov 10 2017
 Error: ENOENT: no such file or directory, stat '/home/ubuntu/workspace/public/login.html'Time: Fri Nov 10 2017
 ValidationError: description: Path `description` is required., name: Path `name` is required.Time: Fri Nov 10 2017
+Error: ValidationError: participants.0.optionId: Path `optionId` is required., participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
+Error: ValidationError: participants.0.optionId: Path `optionId` is required., participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
+Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
+Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
+Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
+Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
+Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
