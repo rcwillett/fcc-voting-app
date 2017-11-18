@@ -32,11 +32,11 @@ const creatorSchema = new Schema({
 const participantSchema = new Schema({
     userId: {
         type: String,
-        required: true
+        required: false
     },
     uuid: {
-        type: Number,
-        required: true
+        type: String,
+        required: false
     },
     optionId: {
         type: Number,

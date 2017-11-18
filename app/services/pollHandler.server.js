@@ -1,7 +1,8 @@
 'use strict';
 
 const Poll = require('../models/polls.js');
-const pollModel = require('../../common/models/poll.js');
+const PollModel = require('../../common/models/poll.js');
+const PollOption = require('../../common/models/option.js');
 const userSelection = require('../../common/models/userSelection.js');
 const UserHandler = require('../services/userHandler.server.js');
 
@@ -56,9 +57,10 @@ function PollHandler() {
 			next(new Error("Login Required"));
 		}
 	};
+	
 	this.addPoll = function(req, res, next) {
 		if (req.user) {
-				var newPoll = new Poll(new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
+				var newPoll = new Poll(new PollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
 				newPoll.save(function(err, savedNewPoll) {
 					if (!err) {
 						res.status(200);
@@ -116,14 +118,16 @@ function PollHandler() {
 		if (req.user) {
 			Poll.findOne({ '_id': req.body.pollId })
 			.exec(function(err, pollToEdit){
+				
 				if (err) { next(err); }
 				else{
-					pollToEdit.options.push(req.body.pollOption);
+					const newOptionId = pollToEdit.options.length;
+					pollToEdit.options.push(new PollOption(newOptionId, req.body.optionText));
 					pollToEdit.save(function(err, result){
 						if(err){ next(err);}
 						else{
 							res.status(200);
-							res.json({ status: 0, message: "Poll Option Addition Successful" });
+							res.json({ status: 0, message: "Poll Option Addition Successful", data: result });
 						}
 					});
 				}

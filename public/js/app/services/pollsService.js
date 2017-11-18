@@ -44,10 +44,10 @@ angular.module("pollsServiceModule", [])
         });
     };
 
-    self.addPollOption = function(pollId, option) {
+    self.addPollOption = function(pollId, optionText) {
         var requestData = {
             "pollId": pollId,
-            "pollOption": option
+            "optionText": optionText
         };
         
         return $http({

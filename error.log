@@ -18,3 +18,4 @@ Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat N
 Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
 Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
 Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
+Error: ValidationError: participants.1.optionId: Path `optionId` is required.Time: Sat Nov 18 2017 20:28:26 GMT+0000 (UTC)
