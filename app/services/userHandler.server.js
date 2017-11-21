@@ -1,5 +1,7 @@
-var Users = require('../models/users.js');
-var pollInfo = require("../../common/models/pollInfo.js");
+'use strict';
+
+const Users = require('../models/users.js');
+const pollInfo = require("../../common/models/pollInfo.js");
 
 function UserHandler() {
 

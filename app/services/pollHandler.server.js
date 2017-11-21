@@ -1,9 +1,10 @@
 'use strict';
 
-var Poll = require('../models/polls.js');
-var pollModel = require('../../common/models/poll.js');
-var userSelection = require('../../common/models/userSelection.js');
-var UserHandler = require('../controllers/userHandler.server.js');
+const Poll = require('../models/polls.js');
+const PollModel = require('../../common/models/poll.js');
+const PollOption = require('../../common/models/option.js');
+const userSelection = require('../../common/models/userSelection.js');
+const UserHandler = require('../services/userHandler.server.js');
 
 function PollHandler() {
 
@@ -56,9 +57,10 @@ function PollHandler() {
 			next(new Error("Login Required"));
 		}
 	};
+	
 	this.addPoll = function(req, res, next) {
 		if (req.user) {
-				var newPoll = new Poll(new pollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
+				var newPoll = new Poll(new PollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
 				newPoll.save(function(err, savedNewPoll) {
 					if (!err) {
 						res.status(200);
@@ -110,8 +112,33 @@ function PollHandler() {
 			res.status(401);
 			next(new Error("Login Required to access"));
 		}
-	}
+	};
 
+	this.addPollOption = function(req, res, next) {
+		if (req.user) {
+			Poll.findOne({ '_id': req.body.pollId })
+			.exec(function(err, pollToEdit){
+				
+				if (err) { next(err); }
+				else{
+					const newOptionId = pollToEdit.options.length;
+					pollToEdit.options.push(new PollOption(newOptionId, req.body.optionText));
+					pollToEdit.save(function(err, result){
+						if(err){ next(err);}
+						else{
+							res.status(200);
+							res.json({ status: 0, message: "Poll Option Addition Successful", data: result });
+						}
+					});
+				}
+			});
+		}
+		else {
+			res.status(401);
+			next(new Error("Login Required to access"));
+		}
+	};
+	
 	this.voteOnPoll = function(req, res, next) {
 		var cookie = req.cookies.WillittFccVote;
 		Poll.findOne({ '_id': req.body.pollId },
@@ -171,7 +198,7 @@ function PollHandler() {
 				}
 			}
 		);
-	}
+	};
 
 	function adjustOption(pollOptions, selectedId, adjustment) {
 		for (var i = 0; i < pollOptions.length; i++) {

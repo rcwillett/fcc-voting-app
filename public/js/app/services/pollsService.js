@@ -26,23 +26,37 @@ angular.module("pollsServiceModule", [])
         }); 
     };
     
-    self.createPoll = function(pollObj){
+    self.createPoll = function(pollObj) {
         var requestData = pollObj;
         return $http({
-           method: "POST",
-           url: "/addPoll",
-           data: requestData
+            method: "POST",
+            url: "/addPoll",
+            data: requestData
         });
     };
-    
-    self.editPoll = function(pollObj){
+
+    self.editPoll = function(pollObj) {
         var requestData = pollObj;
         return $http({
-           method: "POST",
-           url: "/addPoll",
-           data: requestData
+            method: "POST",
+            url: "/addPoll",
+            data: requestData
         });
     };
+
+    self.addPollOption = function(pollId, optionText) {
+        var requestData = {
+            "pollId": pollId,
+            "optionText": optionText
+        };
+        
+        return $http({
+            method: "POST",
+            url: "/addPollOption",
+            data: requestData,
+            type: "application/json"
+        });
+    }
     
     self.vote = function(pollId, optionId){
         var requestData = {

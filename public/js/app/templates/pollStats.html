@@ -1,18 +1,29 @@
 <div class="row">
-    <div class="col-xs-12">
-        <h1>Results For "{{vm.poll.name}}"</h1>
-        <h2>Created By: {{vm.poll.creator.userName}}</h2>
+    <div class="col-12">
+        <h1 class="mt-3 mb-3">Results For "{{vm.poll.name}}"<br/><small>Created By: {{vm.poll.creator.userName}}</small></h1>
     </div>
-    <div class="col-xs-12 col-sm-6">
-        <canvas id="bar-chart-results"></canvas>
-    </div>
-    <div class="col-xs-12 col-sm-6">
-        <canvas id="pie-chart-results"></canvas>
-    </div>
-    <div class="col-xs-12">
-        <table>
-            <th></th>
-            <tr></tr>
+    <div class="col-12 mt-3 mb-3">
+        <h2>Results Table:</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Option Name</th>
+                    <th>Option Votes</th>
+                </tr>
+            </thead>
+            <tr ng-repeat="option in vm.poll.options track by $index">
+                <td>{{option.optionText}}</td>
+                <td>{{option.numTimesSelected}}</td>
+            </tr>
         </table>
     </div>
+    <div class="col-12 col-md-6 mt-3 mb-3">
+        <h2>Results Bar Chart:</h2>
+        <canvas id="bar-chart-results"></canvas>
+    </div>
+    <div class="col-12 col-md-6 mt-3 mb-3">
+        <h2>Results Pie Chart:</h2>
+        <canvas id="pie-chart-results"></canvas>
+    </div>
+
 </div>

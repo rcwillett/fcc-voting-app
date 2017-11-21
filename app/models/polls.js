@@ -1,9 +1,9 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var optionSchema = new Schema({
+const optionSchema = new Schema({
     optionText: {
         type: String,
         required: true
@@ -18,7 +18,7 @@ var optionSchema = new Schema({
     }
 });
 
-var creatorSchema = new Schema({
+const creatorSchema = new Schema({
     id: {
         type: String,
         required: true
@@ -29,14 +29,14 @@ var creatorSchema = new Schema({
     }
 });
 
-var participantSchema = new Schema({
+const participantSchema = new Schema({
     userId: {
         type: String,
-        required: true
+        required: false
     },
     uuid: {
-        type: Number,
-        required: true
+        type: String,
+        required: false
     },
     optionId: {
         type: Number,
@@ -44,7 +44,7 @@ var participantSchema = new Schema({
     }
 });
 
-var Poll = new Schema({
+const Poll = new Schema({
     name: {
         type: String,
         required: true

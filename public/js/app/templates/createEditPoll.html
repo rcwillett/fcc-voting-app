@@ -13,11 +13,12 @@
         </div>
         <div class="col-12">
             <div class="h3 pt-3 mb-2 border-bottom border-primary">Current Poll Options:</div>
-            <div class="row pt-2 pb-2 border-bottom border-secondary" ng-repeat="option in vm.pollOptions track by $index">
-                <div class="col-12">
-                    <div class="form-inline">
-                        <input class="form-control w-50" ng-model="option.optionText" placeholder="Enter Option Text" /><button class="btn btn-primary ml-2 w-25" ng-click="vm.removeOption(option.optionId)">Remove Option</button>
-                    </div>
+            <div class="row border-bottom border-secondary justify-content-between" ng-repeat="option in vm.pollOptions track by $index">
+                <div class="col-12 col-md-8 pt-2 pb-2">
+                    <input class="form-control" ng-model="option.optionText" placeholder="Enter Option Text" />
+                </div>
+                <div class="col-12 col-md-4 pt-2 pb-2">
+                    <button class="btn btn-primary w-100" ng-click="vm.removeOption(option.optionId)">Remove Option</button>
                 </div>
             </div>
         </div>
