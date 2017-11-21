@@ -14,7 +14,7 @@ angular.module("pollViewControllerModule", ["pollsServiceModule"])
             vm.submitSelection = submitSelection;
             vm.submitNewOption = submitNewOption;
             vm.addNewOption = addNewOption;
-            vm.inputValidationPattern = /[^a-zA-Z0-9]/;
+            vm.inputValidationPattern = /[a-zA-Z0-9]/;
             vm.newPollOption = "";
 
             if ($routeParams.pollId != null && $routeParams.pollId !== "") {
@@ -28,8 +28,8 @@ angular.module("pollViewControllerModule", ["pollsServiceModule"])
         function getPollSuccess(serverResp) {
             vm.poll = serverResp.data.pollInfo;
             vm.selectedOption = serverResp.data.userSelection ? serverResp.data.userSelection : vm.poll.options[0];
-            vm.facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?u=' + window.location.href;
-            vm.twitterShareLink = 'https://twitter.com/home?status=' + window.location.href;
+            vm.facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?u=' + window.encodeURI(window.location.href);
+            vm.twitterShareLink = 'https://twitter.com/home?status=' + window.encodeURI(window.location.href);
         }
 
         function submitSelection() {
