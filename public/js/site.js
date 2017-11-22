@@ -35430,7 +35430,7 @@ angular.module("pollViewControllerModule", ["pollsServiceModule"])
 
         function getPollSuccess(serverResp) {
             vm.poll = serverResp.data.pollInfo;
-            vm.selectedOption = serverResp.data.userSelection ? serverResp.data.userSelection : vm.poll.options[0];
+            vm.selectedOption = serverResp.data.userSelection ? vm.poll.options[serverResp.data.userSelection] : vm.poll.options[0];
             vm.facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?u=' + window.encodeURI(window.location.href);
             vm.twitterShareLink = 'https://twitter.com/home?status=' + window.encodeURI(window.location.href);
         }
@@ -35443,9 +35443,6 @@ angular.module("pollViewControllerModule", ["pollsServiceModule"])
         }
 
         function submitNewOption() {
-            console.log($scope.newOptionForm);
-            console.log($scope.newOptionForm.newPollOption.$error);
-            console.log($scope.newOptionForm.$submitted && ($scope.newOptionForm.newPollOption.$error.required || $scope.newOptionForm.newPollOption.$error.pattern));
             if (!$scope.newOptionForm.newPollOption.$error.required && ! $scope.newOptionForm.newPollOption.$error.pattern) {
                 pollService.addPollOption($routeParams.pollId, vm.newPollOption).then(newOptionSuccess, requestFailure);
             }
