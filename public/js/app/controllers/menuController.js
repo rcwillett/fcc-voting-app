@@ -1,21 +1,23 @@
-angular.module("menuControllerModule", ["loginServiceModule"])
-    .controller("menuController", ["$scope", "$rootScope", "loginService", function($scope, $rootScope, loginService) {
+(function() {
+    angular.module("pollApp")
+        .controller("menuController", ["$scope", "$rootScope", "loginService", function($scope, $rootScope, loginService) {
 
-        var menuVm = $scope.menuVm = {};
+            var menuVm = $scope.menuVm = {};
 
-        menuVm.logOut = logOut;
+            menuVm.logOut = logOut;
 
-        function logOut() {
-            loginService.logout().then(logOutSuccess, failResp);
-        }
+            function logOut() {
+                loginService.logout().then(logOutSuccess, failResp);
+            }
 
-        function logOutSuccess() {
-            $rootScope.loggedIn = false;
-            window.location.href ="/";
-        }
+            function logOutSuccess() {
+                $rootScope.loggedIn = false;
+                window.location.href = "/";
+            }
 
-        function failResp() {
-            $rootScope.error = true;
-        }
+            function failResp() {
+                $rootScope.error = true;
+            }
 
-    }]);
+        }]);
+}());

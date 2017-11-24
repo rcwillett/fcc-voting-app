@@ -1,32 +1,33 @@
-.app-loader-wrap{
+.app-loader-wrap {
     min-height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    .circle-loader-wrap{
+
+    .ball-loader-wrap {
         position: relative;
         height: $loader-size;
         width: $loader-size;
     }
-    .circle-loader{
-        position:absolute;
+    .ball-loader {
+        position: absolute;
         height: 100%;
         width: 100%;
-        border-top: $loader-border;
-        border-left: $loader-border;
-        border-right: $loader-border;
-        border-radius: 25%;
-        animation: 3s linear rotate;
+        border-top: 5px solid $loader-color;
+        border-left: 5px solid $loader-color;
+        border-bottom: 5px solid $loader-color;
+        border-right: 20px solid $loader-color;
+        border-radius: 50%;
+        animation: rotate 1s linear infinite;
     }
 }
 
-@keyframes rotate{
-    0% {
-        transform: rotate(0);
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
     }
-    
-    100% {
-        transform: rotate(360);
+
+    to {
+        transform: rotate(360deg);
     }
 }
