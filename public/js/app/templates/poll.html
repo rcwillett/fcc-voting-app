@@ -2,7 +2,8 @@
 
 <form class="form-group row" ng-submit="vm.submitSelection()">
     <div class="col-12 col-md-8 mt-2">
-        <select class="form-control w-100" ng-options="poll.optionId as poll.optionText for poll in vm.poll.options track by poll.optionId" ng-model="vm.selectedOption"></select>
+        <select class="form-control w-100" ng-options="poll as poll.optionText for poll in vm.poll.options track by poll.optionId" ng-model="vm.selectedOption">
+        </select>
     </div>
     <div class="col-12 col-md-4 mt-2">
         <input class="btn btn-primary w-100" value="Submit Selection" type="submit" />

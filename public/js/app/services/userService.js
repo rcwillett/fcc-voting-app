@@ -1,16 +1,18 @@
-angular.module("userServiceModule", [])
-    .service("userService", ["$http", function($http) {
-        var self = this;
+(function() {
+    angular.module("pollApp")
+        .service("userService", ["$http", function($http) {
+            var self = this;
 
-        self.getUserInfo = getUserInfo;
+            self.getUserInfo = getUserInfo;
 
-        function getUserInfo() {
-            var url = "/getUserInfo";
-            return $http({
-                method: "GET",
-                url: url
-            });
-        }
+            function getUserInfo() {
+                var url = "/getUserInfo";
+                return $http({
+                    method: "GET",
+                    url: url
+                });
+            }
 
-        return self;
-    }]);
+            return self;
+        }]);
+}());
