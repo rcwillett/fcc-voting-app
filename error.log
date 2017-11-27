@@ -19,3 +19,19 @@ Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat N
 Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
 Error: ValidationError: participants.0.uuid: Path `uuid` is required.Time: Sat Nov 18 2017
 Error: ValidationError: participants.1.optionId: Path `optionId` is required.Time: Sat Nov 18 2017 20:28:26 GMT+0000 (UTC)
+Error: ValidationError: participants.1.optionId: Cast to Number failed for value "{ optionId: 4,
+  optionText: '1234564',
+  _id: '5a138c416e1c9a0c3c1fde2c',
+  numTimesSelected: 0 }" at path "optionId"Time: Mon Nov 27 2017 23:17:31 GMT+0000 (UTC)
+Error: ValidationError: participants.1.optionId: Cast to Number failed for value "{ optionId: 4,
+  optionText: '1234564',
+  _id: '5a138c416e1c9a0c3c1fde2c',
+  numTimesSelected: 0 }" at path "optionId"Time: Mon Nov 27 2017 23:17:43 GMT+0000 (UTC)
+Error: ValidationError: participants.1.optionId: Cast to Number failed for value "{ optionId: 3,
+  optionText: '8***',
+  _id: '5a136036eb41c508a7025d4c',
+  numTimesSelected: 0 }" at path "optionId"Time: Mon Nov 27 2017 23:17:54 GMT+0000 (UTC)
+Error: ValidationError: participants.1.optionId: Cast to Number failed for value "{ optionId: 3,
+  optionText: '8***',
+  _id: '5a136036eb41c508a7025d4c',
+  numTimesSelected: 0 }" at path "optionId"Time: Mon Nov 27 2017 23:23:15 GMT+0000 (UTC)

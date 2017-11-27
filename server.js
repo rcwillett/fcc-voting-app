@@ -1,25 +1,25 @@
 'use strict';
 
 var express = require('express');
-var routes = require('./app/routes/index.js');
+var routes = require('./server/routes/index.js');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
-var errorHandler = require('./utilities/errorHandler.js');
-var errorLogger = require('./utilities/errorLogger.js');
+var errorHandler = require('./server/utilities/errorHandler.js');
+var errorLogger = require('./server/utilities/errorLogger.js');
 
 var app = express();
 require('dotenv').load();
-require('./app/config/passport')(passport);
+require('./server/config/passport')(passport);
 
 mongoose.connect(process.env.MONGO_URI);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 mongoose.Promise = global.Promise;
 
-app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
+app.use('/controllers', express.static(process.cwd() + '/server/controllers'));
 app.use('/public', express.static(process.cwd() + '/public'));
-app.use('/common', express.static(process.cwd() + '/app/common'));
+app.use('/common', express.static(process.cwd() + '/server/common'));
 
 app.use(session({
 	secret: 'secretClementine',
