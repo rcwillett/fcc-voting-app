@@ -3,11 +3,11 @@
 const BodyParser = require("body-parser");
 const CookieParser = require('cookie-parser');
 const path = process.cwd();
-const CookieHandler = require(path + '/app/config/cookie.js');
-const PollHandler = require(path + '/app/services/pollHandler.server.js');
-const UserHandler = require(path + '/app/services/userHandler.server.js');
-const errorHandler = require(path + '/utilities/errorHandler.js');
-const errorLogger = require(path + '/utilities/errorLogger.js');
+const CookieHandler = require(path + '/server/config/cookie.js');
+const PollHandler = require(path + '/server/services/pollHandler.server.js');
+const UserHandler = require(path + '/server/services/userHandler.server.js');
+const errorHandler = require(path + '/server/utilities/errorHandler.js');
+const errorLogger = require(path + '/server/utilities/errorLogger.js');
 
 module.exports = function (app, passport) {
 

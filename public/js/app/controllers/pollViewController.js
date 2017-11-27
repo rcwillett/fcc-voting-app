@@ -34,7 +34,7 @@
             }
 
             function submitSelection() {
-                pollService.vote($routeParams.pollId, vm.selectedOption)
+                pollService.vote($routeParams.pollId, vm.selectedOption.optionId)
                     .then(function(resp) {
                         displaySuccessMessage("Option Selection Successful");
                     });
