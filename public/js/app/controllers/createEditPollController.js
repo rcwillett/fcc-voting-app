@@ -28,10 +28,9 @@
                     vm.pollTitle = "";
                     vm.pollDescription = "";
                     vm.pollId = null;
-                    vm.pollOptions = [];
+                    vm.pollOptions = [{ optionId: 0, optionText: "" }];
                     vm.submitText = "Create Poll";
                 }
-                scopeApply();
             }
 
             function addOption() {

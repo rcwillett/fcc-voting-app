@@ -1,6 +1,6 @@
 (function() {
     angular.module("pollApp")
-        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "pollService", function($routeParams, $scope, $rootScope, $timeout, pollService) {
+        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "pollService", "pollNotifier", function($routeParams, $scope, $rootScope, $timeout, pollService, pollNotifier) {
             $scope.vm = {};
 
             var vm = $scope.vm;
@@ -36,7 +36,7 @@
             function submitSelection() {
                 pollService.vote($routeParams.pollId, vm.selectedOption.optionId)
                     .then(function(resp) {
-                        displaySuccessMessage("Option Selection Successful");
+                        pollNotifier.success("Option Selection Successful");
                     });
             }
 
@@ -50,16 +50,7 @@
                 vm.newOptionFormVisible = false;
                 vm.addNewOptionVisible = false;
                 vm.poll = resp.data.data;
-                displaySuccessMessage("New Option Added");
-            }
-
-            function displaySuccessMessage(message) {
-                vm.successMessageVisible = true;
-                vm.successMessage = message;
-                $timeout(function() {
-                    vm.successMessage = message;
-                    vm.successMessageVisible = false;
-                }, 5000);
+                pollNotifier.success("New Option Added");
             }
 
             function addNewOption() {
@@ -74,8 +65,7 @@
             }
 
             function requestFailure(resp) {
-                console.error(resp);
-                vm.unexpectedError = true;
+                pollNotifier.failure(resp.message);
             }
 
         }]);
