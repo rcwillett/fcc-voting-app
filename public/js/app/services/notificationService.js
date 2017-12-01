@@ -1,18 +1,17 @@
 (function(){
-    angular.module("pollApp").constant("ngToastr", toastr);
     angular.module("pollApp")
-    .service("pollNotifier", ["ngToastr", function(ngToastr){
+    .service("pollNotifier", ["toastr", function(toastr){
         return {
           success: successFunction,
           failure: failFunction
         };
         
         function successFunction(msg){
-            ngToastr.success(msg);
+            toastr.success(msg);
         }
         
         function failFunction(msg){
-            ngToastr.fail(msg);
+            toastr.fail(msg);
         }
         
     }]);

@@ -1,5 +1,5 @@
 (function() {
-    angular.module("pollApp", ["ngRoute"])
+    angular.module("pollApp", ["ngRoute", "toastr"])
         .run(["$rootScope", "$location", "loginService", "appConstants", function($rootScope, $location, loginService, appConstants) {
 
             $rootScope.loading = true;
