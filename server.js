@@ -20,7 +20,7 @@ mongoose.Promise = global.Promise;
 app.use('/controllers', express.static(process.cwd() + '/server/controllers'));
 app.use('/public', express.static(process.cwd() + '/public'));
 app.use('/common', express.static(process.cwd() + '/server/common'));
-
+//app.use('/scripts/libs', express.static(process.cwd() + '/node_modules/'));
 app.use(session({
 	secret: 'secretClementine',
 	resave: false,

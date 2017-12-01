@@ -8,34 +8,43 @@ var cleanCss = require("gulp-clean-css");
 var sourceMaps = require("gulp-sourcemaps");
 
 //Sources
-var sassSources = ["./public/scss/site/site.scss"];
+var sassSources = ["./public/scss/site/site.scss", "./public/scss/bootstrap/bootstrap.scss"];
 var sassFiles = ["./public/scss/**/*.scss", "./public/scss/**/**/*.scss"];
-var jsSources = ["./node_modules/angular/angular.js", "./node_modules/angular-route/angular-route.js", "./node_modules/chart.js/dist/Chart.min.js", "./models/*.js", "./public/js/app/**/*.js", "./public/js/app/*.js"];
+var jsSources = ["./models/*.js", "./public/js/app/**/*.js", "./public/js/app/*.js"];
+var libraries = ["./node_modules/angular/*", "./node_modules/angular-route/*", "./node_modules/angular-toastr/*", "./node_modules/angular-toastr/**/*", "./node_modules/chart.js/dist/*"]
 
-
-gulp.task("generateSiteCss", function(){
+gulp.task("generateSiteCss", function() {
     gulp.src(sassSources)
-    .pipe(sourceMaps.init({largeFile: true}))
-    .pipe(sass().on('error', gutil.log))
-    .pipe(cleanCss().on('error', gutil.log))
-    .pipe(sourceMaps.write("../maps"))
-    .pipe(gulp.dest("./public/css/"));
+        .pipe(sass().on('error', gutil.log))
+        .pipe(gulp.dest("./public/css/"))
+        .pipe(gulpConcat("styles.css").on('error', gutil.log))
+        .pipe(gulp.dest("./public/css/"))
+        .pipe(sourceMaps.init({ largeFile: true }))
+        .pipe(cleanCss().on('error', gutil.log))
+        .pipe(rename({ extname: '.min.css' }))
+        .pipe(sourceMaps.write("../maps"))
+        .pipe(gulp.dest("./public/css/"));
 });
 
-gulp.task("generateSiteJs", function(){
+gulp.task("generateSiteJs", function() {
     gulp.src(jsSources)
-    .pipe(sourceMaps.init({largeFile: true}))
-    .pipe(gulpConcat("site.js").on('error', gutil.log))
-    .pipe(gulp.dest("./public/js/"))
-    .pipe(uglify().on('error', gutil.log))
-    .pipe(rename({extname: '.min.js'}))
-    .pipe(sourceMaps.write("../maps"))
-    .pipe(gulp.dest("./public/js/"));
+        .pipe(sourceMaps.init({ largeFile: true }))
+        .pipe(gulpConcat("site.js").on('error', gutil.log))
+        .pipe(gulp.dest("./public/js/"))
+        .pipe(uglify().on('error', gutil.log))
+        .pipe(rename({ extname: '.min.js' }))
+        .pipe(sourceMaps.write("../maps"))
+        .pipe(gulp.dest("./public/js/"));
 });
 
-gulp.task("watch", function(){
-    gulp.watch(sassSources, ["generateSiteCss"]);
+gulp.task("copyLibs", function(){
+    gulp.src(libraries, {base:"node_modules"})
+    .pipe(gulp.dest("./public/libs/"));
+});
+
+gulp.task("watch", function() {
+    gulp.watch(sassFiles, ["generateSiteCss"]);
     gulp.watch(jsSources, ["generateSiteJs"]);
 });
 
-gulp.task("default", ["generateSiteCss", "generateSiteJs", "watch"]);
+gulp.task("default", ["generateSiteCss", "generateSiteJs", "copyLibs", "watch"]);

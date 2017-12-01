@@ -1,5 +1,4 @@
 'use strict';
-
 const BodyParser = require("body-parser");
 const CookieParser = require('cookie-parser');
 const path = process.cwd();

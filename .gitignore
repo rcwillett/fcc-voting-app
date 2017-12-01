@@ -1,2 +1,4 @@
 .eslintrc
 .env
+/node_modules
+error.log
