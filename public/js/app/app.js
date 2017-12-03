@@ -1,6 +1,6 @@
 (function() {
     angular.module("pollApp", ["ngRoute", "toastr"])
-        .run(["$rootScope", "$location", "loginService", "appConstants", function($rootScope, $location, loginService, appConstants) {
+        .run(["$rootScope", "$location", "loginService", "notificationService", "appConstants", function($rootScope, $location, loginService, notificationService, appConstants) {
 
             $rootScope.loading = true;
             $rootScope.loggedIn = false;
@@ -13,6 +13,7 @@
                 }
                 else if (next.$$route && appConstants.restrictedRoutes.indexOf(next.$$route.originalPath) > -1) {
                     $location.path("/login");
+                    notificationService.warn("You must log in to access this part of the site");
                 }
             });
 

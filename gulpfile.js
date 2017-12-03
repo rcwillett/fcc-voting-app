@@ -9,9 +9,8 @@ var sourceMaps = require("gulp-sourcemaps");
 
 //Sources
 var sassSources = ["./public/scss/site/site.scss", "./public/scss/bootstrap/bootstrap.scss"];
-var sassFiles = ["./public/scss/**/*.scss", "./public/scss/**/**/*.scss"];
+var sassWatch = ["./public/scss/**/*.scss", "./public/scss/**/**/*.scss"];
 var jsSources = ["./models/*.js", "./public/js/app/**/*.js", "./public/js/app/*.js"];
-var libraries = ["./node_modules/angular/*", "./node_modules/angular-route/*", "./node_modules/angular-toastr/*", "./node_modules/angular-toastr/**/*", "./node_modules/chart.js/dist/*"]
 
 gulp.task("generateSiteCss", function() {
     gulp.src(sassSources)
@@ -37,14 +36,9 @@ gulp.task("generateSiteJs", function() {
         .pipe(gulp.dest("./public/js/"));
 });
 
-gulp.task("copyLibs", function(){
-    gulp.src(libraries, {base:"node_modules"})
-    .pipe(gulp.dest("./public/libs/"));
-});
-
 gulp.task("watch", function() {
-    gulp.watch(sassFiles, ["generateSiteCss"]);
+    gulp.watch(sassWatch, ["generateSiteCss"]);
     gulp.watch(jsSources, ["generateSiteJs"]);
 });
 
-gulp.task("default", ["generateSiteCss", "generateSiteJs", "copyLibs", "watch"]);
+gulp.task("default", ["generateSiteCss", "generateSiteJs", "watch"]);

@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const optionSchema = new Schema({
+const OptionSchema = new Schema({
     optionText: {
         type: String,
         required: true
@@ -18,7 +18,7 @@ const optionSchema = new Schema({
     }
 });
 
-const creatorSchema = new Schema({
+const CreatorSchema = new Schema({
     id: {
         type: String,
         required: true
@@ -29,7 +29,7 @@ const creatorSchema = new Schema({
     }
 });
 
-const participantSchema = new Schema({
+const ParticipantSchema = new Schema({
     userId: {
         type: String,
         required: false
@@ -53,9 +53,9 @@ const Poll = new Schema({
         type: String,
         required: true
     },
-    creator: creatorSchema,
-    participants: [participantSchema],
-    options: [optionSchema]
+    creator: CreatorSchema,
+    participants: [ParticipantSchema],
+    options: [OptionSchema]
 });
 
 module.exports = mongoose.model('PollModel', Poll);

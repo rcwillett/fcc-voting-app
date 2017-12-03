@@ -1,6 +1,6 @@
 (function() {
     angular.module("pollApp")
-        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "pollService", "pollNotifier", function($routeParams, $scope, $rootScope, $timeout, pollService, pollNotifier) {
+        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "notificationService", "pollNotifier", function($routeParams, $scope, $rootScope, $timeout, notificationService, pollNotifier) {
             $scope.vm = {};
 
             var vm = $scope.vm;
@@ -19,7 +19,7 @@
                 vm.newPollOption = "";
 
                 if ($routeParams.pollId != null && $routeParams.pollId !== "") {
-                    pollService.getPoll($routeParams.pollId).then(getPollSuccess, requestFailure);
+                    notificationService.getPoll($routeParams.pollId).then(getPollSuccess, requestFailure);
                 }
                 else {
                     window.location.href = "/404";
@@ -34,7 +34,7 @@
             }
 
             function submitSelection() {
-                pollService.vote($routeParams.pollId, vm.selectedOption.optionId)
+                notificationService.vote($routeParams.pollId, vm.selectedOption.optionId)
                     .then(function(resp) {
                         pollNotifier.success("Option Selection Successful");
                     });
@@ -42,7 +42,7 @@
 
             function submitNewOption() {
                 if (!$scope.newOptionForm.newPollOption.$error.required && !$scope.newOptionForm.newPollOption.$error.pattern) {
-                    pollService.addPollOption($routeParams.pollId, vm.newPollOption).then(newOptionSuccess, requestFailure);
+                    notificationService.addPollOption($routeParams.pollId, vm.newPollOption).then(newOptionSuccess, requestFailure);
                 }
             }
 

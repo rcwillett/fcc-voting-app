@@ -1,9 +1,10 @@
 (function(){
     angular.module("pollApp")
-    .service("pollNotifier", ["toastr", function(toastr){
+    .service("notificationService", ["toastr", function(toastr){
         return {
           success: successFunction,
-          failure: failFunction
+          failure: failFunction,
+          warn: warnFunction
         };
         
         function successFunction(msg){
@@ -12,6 +13,10 @@
         
         function failFunction(msg){
             toastr.fail(msg);
+        }
+        
+        function warnFunction(msg){
+            toastr.warning(msg);
         }
         
     }]);
