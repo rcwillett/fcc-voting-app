@@ -1,6 +1,6 @@
 (function() {
     angular.module("pollApp")
-        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "notificationService", "pollNotifier", function($routeParams, $scope, $rootScope, $timeout, notificationService, pollNotifier) {
+        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "pollService", "notificationService", function($routeParams, $scope, $rootScope, $timeout, pollService, notificationService) {
             $scope.vm = {};
 
             var vm = $scope.vm;
@@ -19,7 +19,7 @@
                 vm.newPollOption = "";
 
                 if ($routeParams.pollId != null && $routeParams.pollId !== "") {
-                    notificationService.getPoll($routeParams.pollId).then(getPollSuccess, requestFailure);
+                    pollService.getPoll($routeParams.pollId).then(getPollSuccess, requestFailure);
                 }
                 else {
                     window.location.href = "/404";
@@ -34,15 +34,15 @@
             }
 
             function submitSelection() {
-                notificationService.vote($routeParams.pollId, vm.selectedOption.optionId)
+                pollService.vote($routeParams.pollId, vm.selectedOption.optionId)
                     .then(function(resp) {
-                        pollNotifier.success("Option Selection Successful");
+                        notificationService.success("Option Selection Successful");
                     });
             }
 
             function submitNewOption() {
                 if (!$scope.newOptionForm.newPollOption.$error.required && !$scope.newOptionForm.newPollOption.$error.pattern) {
-                    notificationService.addPollOption($routeParams.pollId, vm.newPollOption).then(newOptionSuccess, requestFailure);
+                    pollService.addPollOption($routeParams.pollId, vm.newPollOption).then(newOptionSuccess, requestFailure);
                 }
             }
 
@@ -50,7 +50,7 @@
                 vm.newOptionFormVisible = false;
                 vm.addNewOptionVisible = false;
                 vm.poll = resp.data.data;
-                pollNotifier.success("New Option Added");
+                notificationService.success("New Option Added");
             }
 
             function addNewOption() {
@@ -65,7 +65,7 @@
             }
 
             function requestFailure(resp) {
-                pollNotifier.failure(resp.message);
+                notificationService.failure(resp.message);
             }
 
         }]);

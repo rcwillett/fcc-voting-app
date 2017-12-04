@@ -1,7 +1,7 @@
-const OptionModel = function(optionId, optionText){
+const OptionModel = function(optionId, optionText, numTimesSelected){
     this.optionId = optionId;
     this.optionText = optionText;
-    this.numTimesSelected = 0;
+    this.numTimesSelected = numTimesSelected || 0;
 };
 
 if (typeof module !== "undefined" && module.exports) {

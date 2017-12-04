@@ -12,7 +12,7 @@ const PollModel = function(name, description, creatorId, creatorUserName, option
     function initializeOptions(initOptions) {
         var result = [];
         initOptions.forEach(function(initOption) {
-            result.push(new OptionModel(initOption));
+            result.push(new OptionModel(initOption.optionId, initOption.optionText, initOption.numTimesSelected));
         });
         return result;
     }
