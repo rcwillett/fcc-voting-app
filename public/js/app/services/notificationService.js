@@ -3,7 +3,7 @@
     .service("notificationService", ["toastr", function(toastr){
         return {
           success: successFunction,
-          failure: failFunction,
+          error: errorFunction,
           warn: warnFunction
         };
         
@@ -11,8 +11,8 @@
             toastr.success(msg);
         }
         
-        function failFunction(msg){
-            toastr.fail(msg);
+        function errorFunction(msg){
+            toastr.error(msg);
         }
         
         function warnFunction(msg){

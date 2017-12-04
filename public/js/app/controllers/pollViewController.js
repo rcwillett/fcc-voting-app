@@ -65,7 +65,7 @@
             }
 
             function requestFailure(resp) {
-                notificationService.failure(resp.message);
+                notificationService.error(resp.message);
             }
 
         }]);

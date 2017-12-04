@@ -7,6 +7,7 @@ const PollHandler = require(path + '/server/services/pollHandler.server.js');
 const UserHandler = require(path + '/server/services/userHandler.server.js');
 const errorHandler = require(path + '/server/utilities/errorHandler.js');
 const errorLogger = require(path + '/server/utilities/errorLogger.js');
+const noCache = require(path + '/server/utilities/noCache.js');
 
 module.exports = function (app, passport) {
 
@@ -62,22 +63,22 @@ module.exports = function (app, passport) {
 	.get(userHandler.isUserLoggedIn);
 		
 	app.route('/polls')
-		.get(pollHandler.getPolls);
+		.get(pollHandler.getPolls, noCache);
 
 	app.route('/poll/:id')
-		.get(pollHandler.getPoll);
+		.get(pollHandler.getPoll, noCache);
 		
 	app.route('/userPolls')
-		.get(isLoggedIn, pollHandler.getUserPolls);
+		.get(isLoggedIn, pollHandler.getUserPolls, noCache);
 		
 	app.route('/addPoll')
-		.post(isLoggedIn, BodyParser.json(), pollHandler.addPoll);
+		.post(isLoggedIn, BodyParser.json(), pollHandler.addPoll, noCache);
 		
 	app.route('/addPollOption')
-		.post(isLoggedIn, BodyParser.json(), pollHandler.addPollOption);
+		.post(isLoggedIn, BodyParser.json(), pollHandler.addPollOption, noCache);
 		
 	app.route('/vote')
-		.post(CookieParser(), BodyParser.json(), pollHandler.voteOnPoll);
+		.post(CookieParser(), BodyParser.json(), pollHandler.voteOnPoll, noCache);
 		
 	app.route('/getUserInfo')
 		.get(isLoggedIn, userHandler.getUserInfo);
