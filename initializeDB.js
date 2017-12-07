@@ -3,7 +3,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-mongoose.connect("mongodb://localhost:27017/polls");
+require('dotenv').load();
+mongoose.connect(process.env.MONGO_URI);
 mongoose.Promise = global.Promise;
 
 var UnauthenticatedUser = new Schema({
