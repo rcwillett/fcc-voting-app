@@ -13,9 +13,10 @@ function PollHandler() {
 	this.getPoll = function(req, res) {
 		Poll.findOne({ '_id': req.params.id })
 			.exec(function(err, result) {
-				var response = {
+				var aliasedPoll = new PollModel(result.name, result.description, result.creator.id, result.creator.userName, result.options),
+				response = {
 					userSelection: null,
-					pollInfo: result
+					pollInfo: aliasedPoll
 				};
 				if (err) { throw err; }
 				if (req.user) {
@@ -191,6 +192,7 @@ function PollHandler() {
 							next(new Error(err));
 						}
 						else {
+							var aliasedResult = new PollModel(updatedPoll.name, updatedPoll.description, updatedPoll.creator.id, updatedPoll.creator.userName, updatedPoll.options);
 							res.status(200);
 							res.json(updatedPoll);
 						}

@@ -1,17 +1,22 @@
 (function(){
     angular.module("pollApp")
-    .service("pollNotifier", ["toastr", function(toastr){
+    .service("notificationService", ["toastr", function(toastr){
         return {
           success: successFunction,
-          failure: failFunction
+          error: errorFunction,
+          warn: warnFunction
         };
         
         function successFunction(msg){
             toastr.success(msg);
         }
         
-        function failFunction(msg){
-            toastr.fail(msg);
+        function errorFunction(msg){
+            toastr.error(msg);
+        }
+        
+        function warnFunction(msg){
+            toastr.warning(msg);
         }
         
     }]);

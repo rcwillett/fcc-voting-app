@@ -1,9 +1,13 @@
-var OptionModel = function(optionId, optionText){
+const OptionModel = function(optionId, optionText, numTimesSelected){
     this.optionId = optionId;
     this.optionText = optionText;
-    this.numTimesSelected = 0;
+    this.numTimesSelected = numTimesSelected || 0;
 };
 
-if ( module != null && module.exports) {
+if (typeof module !== "undefined" && module.exports) {
     module.exports = OptionModel;
+}
+else if (typeof angular !== "undefined"){
+    angular.module("pollApp")
+        .factory("OptionModel", OptionModel);
 }
