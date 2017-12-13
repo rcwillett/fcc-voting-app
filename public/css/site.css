@@ -78,3 +78,7 @@ a.no-underline {
 
 .app-body.loading {
   display: none; }
+
+#toast-container.toast-top-right {
+  top: 64px;
+  right: 64px; }
