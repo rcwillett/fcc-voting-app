@@ -17,7 +17,7 @@
         <div class="col-12 col-md-4 mt-2">
             <input class="btn btn-primary w-100" type="submit" value="Add Option" />
         </div>
-        <div class="col-12 errorMsg mt-2" ng-show="newOptionForm.$submitted && (newOptionForm.newPollOption.$error.required || newOptionForm.newPollOption.$error.pattern)">
+        <div class="col-12 errorMsg mt-2 text-danger" ng-show="newOptionForm.$submitted && (newOptionForm.newPollOption.$error.required || newOptionForm.newPollOption.$error.pattern)">
             Please enter an alphanumeric input
         </div>
         <div class="successMessage mt-2" ng-show="vm.successMessageVisible">

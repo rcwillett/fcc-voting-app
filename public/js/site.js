@@ -73,9 +73,9 @@
 }());
 (function() {
     angular.module("pollApp")
-        .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "pollService", "appConstants", "notificationService", createEditPollController]);
+        .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "OptionModel", "PollModel", "pollService", "appConstants", "notificationService", createEditPollController]);
 
-    function createEditPollController($scope, $timeout, $route, $routeParams, pollService, appConstants, notificationService) {
+    function createEditPollController($scope, $timeout, $route, $routeParams, OptionModel, PollModel, pollService, appConstants, notificationService) {
         $scope.vm = {};
         var vm = $scope.vm;
         vm.addOption = addOption;
@@ -104,7 +104,7 @@
                 vm.pollTitle = "";
                 vm.pollDescription = "";
                 vm.pollId = null;
-                vm.pollOptions = [{ optionId: 0, optionText: "" }];
+                vm.pollOptions = [new OptionModel(0, "", 0)];
                 vm.submitText = "Create Poll";
             }
         }
@@ -168,10 +168,8 @@
         }
 
         function pollObject(pollId, pollName, pollDescription, pollOptions) {
+            PollModel.call(this, pollName, pollDescription, "", "", pollOptions)
             this.pollId = pollId;
-            this.name = pollName;
-            this.description = pollDescription;
-            this.options = pollOptions;
         }
 
         function scopeApply() {
@@ -625,3 +623,72 @@
             return self;
         }]);
 }());
+
+var OptionModel = function(optionId, optionText, numTimesSelected){
+    this.optionId = optionId;
+    this.optionText = optionText;
+    this.numTimesSelected = numTimesSelected || 0;
+};
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = OptionModel;
+}
+else if (typeof angular !== "undefined"){
+    angular.module("pollApp")
+        .factory("OptionModel", function(){ return OptionModel });
+}
+var PollOptionModel;
+if (typeof require !== "undefined") {
+    PollOptionModel = require('./option.js');
+}
+else{
+    PollOptionModel = OptionModel || function(){};
+}
+var PollModel = function(name, description, creatorId, creatorUserName, options) {
+    var self = this;
+    this.name = name;
+    this.description = description;
+    this.creator = { id: creatorId, userName: creatorUserName };
+    this.options = initializeOptions(options);
+
+    function initializeOptions(initOptions) {
+        var result = [];
+        initOptions.forEach(function(initOption) {
+            result.push(new PollOptionModel(initOption.optionId, initOption.optionText, initOption.numTimesSelected));
+        });
+        return result;
+    }
+};
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = PollModel;
+}
+else if (typeof angular !== "undefined"){
+    angular.module("pollApp")
+        .factory("PollModel", function(){ return PollModel; });
+}
+var PollInfo = function(pollId, pollName) {
+    this.id = pollId;
+    this.name = pollName;
+};
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = PollInfo;
+}
+else if (typeof angular !== "undefined"){
+    angular.module("pollApp")
+        .factory("PollInfo", function(){ return PollInfo; });
+}
+var UserSelection = function(userId, uuid, userOption) {
+    this.userId = userId;
+    this.uuid = uuid;
+    this.optionId = userOption;
+};
+
+if (typeof module !== "undefined" && module.exports) {
+    module.exports = UserSelection;
+}
+else if (typeof angular !== "undefined"){
+    angular.module("pollApp")
+        .factory("UserSelection", function(){ return UserSelection;});
+}

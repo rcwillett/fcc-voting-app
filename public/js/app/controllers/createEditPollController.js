@@ -1,8 +1,8 @@
 (function() {
     angular.module("pollApp")
-        .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "pollService", "appConstants", "notificationService", createEditPollController]);
+        .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "OptionModel", "PollModel", "pollService", "appConstants", "notificationService", createEditPollController]);
 
-    function createEditPollController($scope, $timeout, $route, $routeParams, pollService, appConstants, notificationService) {
+    function createEditPollController($scope, $timeout, $route, $routeParams, OptionModel, PollModel, pollService, appConstants, notificationService) {
         $scope.vm = {};
         var vm = $scope.vm;
         vm.addOption = addOption;
@@ -31,7 +31,7 @@
                 vm.pollTitle = "";
                 vm.pollDescription = "";
                 vm.pollId = null;
-                vm.pollOptions = [{ optionId: 0, optionText: "" }];
+                vm.pollOptions = [new OptionModel(0, "", 0)];
                 vm.submitText = "Create Poll";
             }
         }
@@ -95,10 +95,8 @@
         }
 
         function pollObject(pollId, pollName, pollDescription, pollOptions) {
+            PollModel.call(this, pollName, pollDescription, "", "", pollOptions)
             this.pollId = pollId;
-            this.name = pollName;
-            this.description = pollDescription;
-            this.options = pollOptions;
         }
 
         function scopeApply() {
