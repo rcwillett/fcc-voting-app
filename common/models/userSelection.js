@@ -1,4 +1,4 @@
-const UserSelection = function(userId, uuid, userOption) {
+var UserSelection = function(userId, uuid, userOption) {
     this.userId = userId;
     this.uuid = uuid;
     this.optionId = userOption;

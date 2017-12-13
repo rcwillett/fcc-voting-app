@@ -1,4 +1,4 @@
-const OptionModel = function(optionId, optionText, numTimesSelected){
+var OptionModel = function(optionId, optionText, numTimesSelected){
     this.optionId = optionId;
     this.optionText = optionText;
     this.numTimesSelected = numTimesSelected || 0;

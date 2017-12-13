@@ -1,4 +1,4 @@
-const PollInfo = function(pollId, pollName) {
+var PollInfo = function(pollId, pollName) {
     this.id = pollId;
     this.name = pollName;
 };

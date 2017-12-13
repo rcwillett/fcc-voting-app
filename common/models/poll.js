@@ -1,8 +1,11 @@
+var PollOptionModel;
 if (typeof require !== "undefined") {
-    const OptionModel = require('./option.js');
+    PollOptionModel = require('./option.js');
 }
-
-const PollModel = function(name, description, creatorId, creatorUserName, options) {
+else{
+    PollOptionModel = OptionModel || function(){};
+}
+var PollModel = function(name, description, creatorId, creatorUserName, options) {
     var self = this;
     this.name = name;
     this.description = description;
@@ -12,7 +15,7 @@ const PollModel = function(name, description, creatorId, creatorUserName, option
     function initializeOptions(initOptions) {
         var result = [];
         initOptions.forEach(function(initOption) {
-            result.push(new OptionModel(initOption.optionId, initOption.optionText, initOption.numTimesSelected));
+            result.push(new PollOptionModel(initOption.optionId, initOption.optionText, initOption.numTimesSelected));
         });
         return result;
     }
