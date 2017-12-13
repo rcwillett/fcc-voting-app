@@ -8,5 +8,5 @@ if (typeof module !== "undefined" && module.exports) {
 }
 else if (typeof angular !== "undefined"){
     angular.module("pollApp")
-        .factory("PollInfo", PollInfo);
+        .factory("PollInfo", function(){ return PollInfo; });
 }

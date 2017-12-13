@@ -10,7 +10,7 @@ var sourceMaps = require("gulp-sourcemaps");
 //Sources
 var sassSources = ["./public/scss/site/site.scss", "./public/scss/bootstrap/bootstrap.scss"];
 var sassWatch = ["./public/scss/**/*.scss", "./public/scss/**/**/*.scss"];
-var jsSources = ["./public/js/app/**/*.js", "./public/js/app/*.js"];
+var jsSources = ["./public/js/app/**/*.js", "./public/js/app/*.js", "./common/models/*.js"];
 
 gulp.task("generateSiteCss", function() {
     gulp.src(sassSources)

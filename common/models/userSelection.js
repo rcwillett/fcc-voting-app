@@ -9,5 +9,5 @@ if (typeof module !== "undefined" && module.exports) {
 }
 else if (typeof angular !== "undefined"){
     angular.module("pollApp")
-        .factory("UserSelection", UserSelection);
+        .factory("UserSelection", function(){ return UserSelection;});
 }

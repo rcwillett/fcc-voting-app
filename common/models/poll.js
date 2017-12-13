@@ -26,5 +26,5 @@ if (typeof module !== "undefined" && module.exports) {
 }
 else if (typeof angular !== "undefined"){
     angular.module("pollApp")
-        .factory("PollModel", PollModel);
+        .factory("PollModel", function(){ return PollModel; });
 }
