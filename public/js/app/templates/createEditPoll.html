@@ -35,10 +35,48 @@
             </div>
             <div class="col-12 pt-3 pb-3" ng-if="vm.isEditing">
                 <div class="mb-3">
-                    <input type="button" class="btn btn-primary" value="{{vm.submitText}}" />
+                    <input type="button" class="btn btn-primary" value="{{vm.submitText}}" data-toggle="modal" data-target="#confirmEditModal" />
                 </div>
                 <div>
-                    <input type="button" class="btn btn-danger" value="Delete Poll" ng-click="vm.deletePoll()"/>
+                    <input type="button" class="btn btn-danger" value="Delete Poll" data-toggle="modal" data-target="#confirmDeleteModal" />
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmEditModalLabel">Confirm Edit</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to edit this poll? (Editing a poll resets all existing votes and cannot be undone)
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Yes" />
+                        <input type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" value="No" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Delete Modal?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this poll? (This cannot be undone)
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-danger" value="Yes" ng-click="vm.deletePoll()" />
+                        <input type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" value="No" />
+                    </div>
                 </div>
             </div>
         </div>

@@ -65,6 +65,7 @@
 
         function submitPoll() {
             if (vm.pollOptions.length > 1 && $route.current.$$route.createEdit === appConstants.createEditEnum.edit && $scope.createPollForm.$valid) {
+                $("#confirmEditModal").modal("hide");
                 pollService.editPoll($routeParams.pollId, new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
                     .then(successfulPollCreation, failedRequest);
             }
@@ -78,6 +79,7 @@
         }
 
         function deletePoll() {
+            $("#confirmDeleteModal").modal("hide");
             pollService.deletePoll($routeParams.pollId).then(successfulDeletion, failedRequest);
         }
 
