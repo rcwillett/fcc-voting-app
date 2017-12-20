@@ -21,7 +21,7 @@
                     <input class="form-control" ng-model="option.optionText" placeholder="Enter Option Text" required="required" />
                 </div>
                 <div class="col-12 col-md-4 pt-2 pb-2">
-                    <button class="btn btn-primary w-100" ng-if="vm.pollOptions.length > 1" ng-click="vm.removeOption(option.optionId)">Remove Option</button>
+                    <input class="btn btn-primary w-100" type="button" ng-if="vm.pollOptions.length > 1" ng-click="vm.removeOption(option.optionId)" value="Remove Option" />
                 </div>
                 <div class="col-12 text-danger"ng-show="(vm.addOptionError || $parent.createPollForm.$submitted) && !option.optionText">You cannot have a blank option</div>
             </div>

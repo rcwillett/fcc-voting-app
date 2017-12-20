@@ -73,13 +73,163 @@
 }());
 (function() {
     angular.module("pollApp")
+        .service("loginService", ["$rootScope", "$http", function($rootScope, $http) {
+            var self = this;
+
+            self.login = login;
+
+            self.logout = logout;
+
+            self.isLoggedIn = isLoggedIn;
+
+            function login() {
+                return $http.get("/auth/github");
+            }
+
+            function logout() {
+                return $http.get("/logout");
+            }
+
+            function isLoggedIn() {
+                return $http.get("/isLoggedIn");
+            }
+
+            return self;
+        }]);
+}());
+(function(){
+    angular.module("pollApp")
+    .service("notificationService", ["toastr", function(toastr){
+        return {
+          success: successFunction,
+          error: errorFunction,
+          warn: warnFunction
+        };
+        
+        function successFunction(msg){
+            toastr.success(msg);
+        }
+        
+        function errorFunction(msg){
+            toastr.error(msg);
+        }
+        
+        function warnFunction(msg){
+            toastr.warning(msg);
+        }
+        
+    }]);
+}());
+(function() {
+    angular.module("pollApp")
+        .service("pollService", ["$http", function($http) {
+            var self = this;
+
+            self.getPoll = function(id) {
+                var url = "/poll/" + id;
+                return $http({
+                    method: "GET",
+                    url: url
+                });
+            };
+
+            self.getPolls = function(numItems) {
+                var requestObj = { "numItems": numItems };
+                return $http({
+                    method: "GET",
+                    url: "/polls",
+                    params: requestObj
+                });
+            };
+
+            self.getUserPolls = function(userId) {
+                return $http({
+                    method: "GET",
+                    url: "/userPolls"
+                });
+            };
+
+            self.createPoll = function(pollObj) {
+                var requestData = pollObj;
+                return $http({
+                    method: "POST",
+                    url: "/addPoll",
+                    data: requestData
+                });
+            };
+
+            self.editPoll = function(pollId, pollObj) {
+                var requestData = {
+                    "pollId" : pollId,
+                    "pollData" : pollObj
+                    };
+                return $http({
+                    method: "POST",
+                    url: "/editPoll",
+                    data: requestData
+                });
+            };
+
+            self.addPollOption = function(pollId, optionText) {
+                var requestData = {
+                    "pollId": pollId,
+                    "optionText": optionText
+                };
+
+                return $http({
+                    method: "POST",
+                    url: "/addPollOption",
+                    data: requestData,
+                    type: "application/json"
+                });
+            }
+
+            self.vote = function(pollId, optionId) {
+                var requestData = {
+                    "pollId": pollId,
+                    "optionId": optionId
+                };
+                return $http({
+                    method: "POST",
+                    url: "/vote",
+                    data: requestData,
+                    type: "application/json"
+                });
+            };
+
+            return self;
+        }]);
+}());
+
+(function() {
+    angular.module("pollApp")
+        .service("userService", ["$http", function($http) {
+            var self = this;
+
+            self.getUserInfo = getUserInfo;
+
+            function getUserInfo() {
+                var url = "/getUserInfo";
+                return $http({
+                    method: "GET",
+                    url: url
+                });
+            }
+
+            return self;
+        }]);
+}());
+
+(function() {
+    angular.module("pollApp")
         .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "OptionModel", "PollModel", "pollService", "appConstants", "notificationService", createEditPollController]);
 
     function createEditPollController($scope, $timeout, $route, $routeParams, OptionModel, PollModel, pollService, appConstants, notificationService) {
         $scope.vm = {};
         var vm = $scope.vm;
-        vm.addOption = addOption;
         vm.addOptionError = false;
+        
+        vm.addOption = addOption;
         vm.removeOption = removeOption;
         vm.submitPoll = submitPoll;
 
@@ -96,7 +246,8 @@
                         vm.submitText = "Update Poll";
                     },
                     function(serverResp) {
-                        vm.unexpectedError = true;
+                        console.error(serverResp);
+                        window.location.href = "/#!/404";
                     }
                 );
             }
@@ -133,7 +284,7 @@
 
         function submitPoll() {
             if (vm.pollOptions.length > 1 && $route.current.$$route.createEdit === appConstants.createEditEnum.edit) {
-                pollService.editPoll(new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
+                pollService.editPoll($routeParams.pollId, new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
                     .then(successfulPollCreation, failedPollCreation);
             }
             else if (vm.pollOptions.length > 1 && vm.pollTitle) {
@@ -475,152 +626,6 @@
                 return '#!pollStats/' + pollId;
             }
 
-        }]);
-}());
-
-(function() {
-    angular.module("pollApp")
-        .service("loginService", ["$rootScope", "$http", function($rootScope, $http) {
-            var self = this;
-
-            self.login = login;
-
-            self.logout = logout;
-
-            self.isLoggedIn = isLoggedIn;
-
-            function login() {
-                return $http.get("/auth/github");
-            }
-
-            function logout() {
-                return $http.get("/logout");
-            }
-
-            function isLoggedIn() {
-                return $http.get("/isLoggedIn");
-            }
-
-            return self;
-        }]);
-}());
-(function(){
-    angular.module("pollApp")
-    .service("notificationService", ["toastr", function(toastr){
-        return {
-          success: successFunction,
-          error: errorFunction,
-          warn: warnFunction
-        };
-        
-        function successFunction(msg){
-            toastr.success(msg);
-        }
-        
-        function errorFunction(msg){
-            toastr.error(msg);
-        }
-        
-        function warnFunction(msg){
-            toastr.warning(msg);
-        }
-        
-    }]);
-}());
-(function() {
-    angular.module("pollApp")
-        .service("pollService", ["$http", function($http) {
-            var self = this;
-
-            self.getPoll = function(id) {
-                var url = "/poll/" + id;
-                return $http({
-                    method: "GET",
-                    url: url
-                });
-            };
-
-            self.getPolls = function(numItems) {
-                var requestObj = { "numItems": numItems };
-                return $http({
-                    method: "GET",
-                    url: "/polls",
-                    params: requestObj
-                });
-            };
-
-            self.getUserPolls = function(userId) {
-                return $http({
-                    method: "GET",
-                    url: "/userPolls"
-                });
-            };
-
-            self.createPoll = function(pollObj) {
-                var requestData = pollObj;
-                return $http({
-                    method: "POST",
-                    url: "/addPoll",
-                    data: requestData
-                });
-            };
-
-            self.editPoll = function(pollObj) {
-                var requestData = pollObj;
-                return $http({
-                    method: "POST",
-                    url: "/addPoll",
-                    data: requestData
-                });
-            };
-
-            self.addPollOption = function(pollId, optionText) {
-                var requestData = {
-                    "pollId": pollId,
-                    "optionText": optionText
-                };
-
-                return $http({
-                    method: "POST",
-                    url: "/addPollOption",
-                    data: requestData,
-                    type: "application/json"
-                });
-            }
-
-            self.vote = function(pollId, optionId) {
-                var requestData = {
-                    "pollId": pollId,
-                    "optionId": optionId
-                };
-                return $http({
-                    method: "POST",
-                    url: "/vote",
-                    data: requestData,
-                    type: "application/json"
-                });
-            };
-
-            return self;
-        }]);
-}());
-
-(function() {
-    angular.module("pollApp")
-        .service("userService", ["$http", function($http) {
-            var self = this;
-
-            self.getUserInfo = getUserInfo;
-
-            function getUserInfo() {
-                var url = "/getUserInfo";
-                return $http({
-                    method: "GET",
-                    url: url
-                });
-            }
-
-            return self;
         }]);
 }());
 

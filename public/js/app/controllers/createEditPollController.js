@@ -5,8 +5,9 @@
     function createEditPollController($scope, $timeout, $route, $routeParams, OptionModel, PollModel, pollService, appConstants, notificationService) {
         $scope.vm = {};
         var vm = $scope.vm;
-        vm.addOption = addOption;
         vm.addOptionError = false;
+        
+        vm.addOption = addOption;
         vm.removeOption = removeOption;
         vm.submitPoll = submitPoll;
 
@@ -23,7 +24,8 @@
                         vm.submitText = "Update Poll";
                     },
                     function(serverResp) {
-                        vm.unexpectedError = true;
+                        console.error(serverResp);
+                        window.location.href = "/#!/404";
                     }
                 );
             }
@@ -60,7 +62,7 @@
 
         function submitPoll() {
             if (vm.pollOptions.length > 1 && $route.current.$$route.createEdit === appConstants.createEditEnum.edit) {
-                pollService.editPoll(new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
+                pollService.editPoll($routeParams.pollId, new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
                     .then(successfulPollCreation, failedPollCreation);
             }
             else if (vm.pollOptions.length > 1 && vm.pollTitle) {
