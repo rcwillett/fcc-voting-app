@@ -11,25 +11,28 @@ function PollHandler() {
 	var userHandler = new UserHandler();
 
 	this.getPoll = function(req, res, next) {
-		if(req.params.id){
-		Poll.findOne({ '_id': req.params.id })
-			.exec(function(err, result) {
-				if (err) { next(err); }
-				if (req.user) {
-					var aliasedPoll = new PollModel(result.name, result.description, result.creator.id, result.creator.userName, result.options),
-						response = {
-							userSelection: null,
-							pollInfo: aliasedPoll
-						};
-					var selectArray = result.participants.filter(function(participant) {
-						return participant.userId == req.user.github.id
-					});
-					response.userSelection = selectArray.length > 0 ? selectArray[0].optionId : null;
-				}
-				res.json(response);
-			});
+		if (req.params.id) {
+			Poll.findOne({ '_id': req.params.id })
+				.exec(function(err, result) {
+					if (err) { next(err); }
+					else {
+						var aliasedPoll = new PollModel(result.name, result.description, result.creator.id, result.creator.userName, result.options),
+							response = {
+								userSelection: null,
+								pollInfo: aliasedPoll
+							};
+						var selectArray = result.participants.filter(function(participant) {
+							return participant.userId == req.user.github.id
+						});
+						if (req.user) {
+
+							response.userSelection = selectArray.length > 0 ? selectArray[0].optionId : null;
+						}
+						res.json(response);
+					}
+				});
 		}
-		else{
+		else {
 			next(new Error("Invalid Poll ID"));
 		}
 	};

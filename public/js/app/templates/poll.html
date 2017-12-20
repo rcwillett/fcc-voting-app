@@ -1,5 +1,6 @@
-<h1 class="mt-3 mb-3">{{vm.poll.name}}<br /><small>Created By: {{vm.poll.creator.userName}}</small></h1>
-
+<h1 class="mt-3 mb-0">{{vm.poll.name}}</h1>
+<h3 class="h6 mb-3">Created By: {{vm.poll.creator.userName}}</h3>
+<p>{{vm.poll.description}}</p>
 <form class="form-group row" ng-submit="vm.submitSelection()">
     <div class="col-12 col-md-8 mt-2">
         <select class="form-control w-100" ng-options="poll as poll.optionText for poll in vm.poll.options track by poll.optionId" ng-model="vm.selectedOption">
