@@ -78,15 +78,19 @@
     function createEditPollController($scope, $timeout, $route, $routeParams, OptionModel, PollModel, pollService, appConstants, notificationService) {
         $scope.vm = {};
         var vm = $scope.vm;
-        vm.addOption = addOption;
         vm.addOptionError = false;
+        vm.isEditing = false;
+
+        vm.addOption = addOption;
         vm.removeOption = removeOption;
         vm.submitPoll = submitPoll;
+        vm.deletePoll = deletePoll;
 
         initData();
 
         function initData() {
             if ($route.current.$$route.createEdit === appConstants.createEditEnum.edit) {
+                vm.isEditing = true;
                 pollService.getPoll($routeParams.pollId).then(
                     function(serverResp) {
                         vm.pollId = serverResp.data.pollInfo.id
@@ -96,7 +100,8 @@
                         vm.submitText = "Update Poll";
                     },
                     function(serverResp) {
-                        vm.unexpectedError = true;
+                        console.error(serverResp);
+                        window.location.href = "/#!/404";
                     }
                 );
             }
@@ -111,9 +116,9 @@
 
         function addOption() {
             var allOptionsNonEmpty = validateOptions();
-            
+
             vm.addOptionError = false;
-            
+
             if (vm.pollOptions.length === 0 || allOptionsNonEmpty) {
                 var pollOptionId = vm.pollOptions.length;
                 vm.pollOptions.push({ optionId: pollOptionId, optionText: "" });
@@ -132,24 +137,41 @@
         }
 
         function submitPoll() {
-            if (vm.pollOptions.length > 1 && $route.current.$$route.createEdit === appConstants.createEditEnum.edit) {
-                pollService.editPoll(new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
-                    .then(successfulPollCreation, failedPollCreation);
+            if (vm.pollOptions.length > 1 && $route.current.$$route.createEdit === appConstants.createEditEnum.edit && $scope.createPollForm.$valid) {
+                $("#confirmEditModal").modal("hide");
+                pollService.editPoll($routeParams.pollId, new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
+                    .then(successfulPollCreation, failedRequest);
             }
-            else if (vm.pollOptions.length > 1 && vm.pollTitle) {
+            else if (vm.pollOptions.length > 1 && vm.pollTitle && $scope.createPollForm.$valid) {
                 pollService.createPoll(new pollObject(vm.pollId, vm.pollTitle, vm.pollDescription, vm.pollOptions))
-                    .then(successfulPollCreation, failedPollCreation);
+                    .then(successfulPollCreation, failedRequest);
             }
             else {
                 notificationService.error("Form Error. Please ensure the form fields are filled correctly.");
             }
         }
 
+        function deletePoll() {
+            $("#confirmDeleteModal").modal("hide");
+            pollService.deletePoll($routeParams.pollId).then(successfulDeletion, failedRequest);
+        }
+
         function successfulPollCreation(res) {
+            if ($route.current.$$route.createEdit === appConstants.createEditEnum.edit) {
+                notificationService.success("Poll Successfully Edited!")
+            }
+            else {
+                notificationService.success("Poll Successfully Created!")
+            }
             window.location = "/#!/viewPoll/" + res.data.pollId;
         }
 
-        function failedPollCreation(res) {
+        function successfulDeletion(res) {
+            notificationService.success("Poll Deleted!");
+            window.location = "/#!/home";
+        }
+
+        function failedRequest(res) {
             if (res.status === 401 || res.status === 403) {
                 window.location.href = "/#!/login";
             }
@@ -157,9 +179,9 @@
                 notificationService.error(res.message);
             }
         }
-        
-        function validateOptions(){
-            for (var index = 0; index < vm.pollOptions.length; index++){
+
+        function validateOptions() {
+            for (var index = 0; index < vm.pollOptions.length; index++) {
                 if (!vm.pollOptions[index].optionText) {
                     return false;
                 }
@@ -565,11 +587,25 @@
                 });
             };
 
-            self.editPoll = function(pollObj) {
-                var requestData = pollObj;
+            self.editPoll = function(pollId, pollObj) {
+                var requestData = {
+                    "pollId": pollId,
+                    "pollData": pollObj
+                };
                 return $http({
                     method: "POST",
-                    url: "/addPoll",
+                    url: "/editPoll",
+                    data: requestData
+                });
+            };
+
+            self.deletePoll = function(pollId) {
+                var requestData = {
+                    "pollId": pollId,
+                };
+                return $http({
+                    method: "POST",
+                    url: "/deletePoll",
                     data: requestData
                 });
             };

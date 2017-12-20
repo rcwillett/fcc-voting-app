@@ -10,29 +10,37 @@ function PollHandler() {
 
 	var userHandler = new UserHandler();
 
-	this.getPoll = function(req, res) {
-		Poll.findOne({ '_id': req.params.id })
-			.exec(function(err, result) {
-				var aliasedPoll = new PollModel(result.name, result.description, result.creator.id, result.creator.userName, result.options),
-				response = {
-					userSelection: null,
-					pollInfo: aliasedPoll
-				};
-				if (err) { throw err; }
-				if (req.user) {
-					var selectArray = result.participants.filter(function(participant) {
-						return participant.userId == req.user.github.id
-					});
-					response.userSelection = selectArray.length > 0 ? selectArray[0].optionId : null;
-				}
-				res.json(response);
-			});
+	this.getPoll = function(req, res, next) {
+		if (req.params.id) {
+			Poll.findOne({ '_id': req.params.id })
+				.exec(function(err, result) {
+					if (err) { next(err); }
+					else {
+						var aliasedPoll = new PollModel(result.name, result.description, result.creator.id, result.creator.userName, result.options),
+							response = {
+								userSelection: null,
+								pollInfo: aliasedPoll
+							};
+						var selectArray = result.participants.filter(function(participant) {
+							return participant.userId == req.user.github.id
+						});
+						if (req.user) {
+
+							response.userSelection = selectArray.length > 0 ? selectArray[0].optionId : null;
+						}
+						res.json(response);
+					}
+				});
+		}
+		else {
+			next(new Error("Invalid Poll ID"));
+		}
 	};
 
-	this.getPolls = function(req, res) {
+	this.getPolls = function(req, res, next) {
 		Poll.find(function(err, results) {
 			if (err) {
-				throw err;
+				next(err);
 			}
 			else {
 				res.status(200);
@@ -58,19 +66,19 @@ function PollHandler() {
 			next(new Error("Login Required"));
 		}
 	};
-	
+
 	this.addPoll = function(req, res, next) {
 		if (req.user) {
-				var newPoll = new Poll(new PollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
-				newPoll.save(function(err, savedNewPoll) {
-					if (!err) {
-						res.status(200);
-						res.json({ pollId: savedNewPoll._id });
-					}
-					else {
-						next(err);
-					}
-				});
+			var newPoll = new Poll(new PollModel(req.body.name, req.body.description, req.user.github.id, req.user.github.displayName, req.body.options));
+			newPoll.save(function(err, savedNewPoll) {
+				if (!err) {
+					res.status(200);
+					res.json({ pollId: savedNewPoll._id });
+				}
+				else {
+					next(err);
+				}
+			});
 		}
 		else {
 			res.status(401);
@@ -80,20 +88,25 @@ function PollHandler() {
 
 	this.editPoll = function(req, res, next) {
 		if (req.user) {
-			Poll.findOne({ '_id': req.params.id })
+			Poll.findOne({ '_id': req.body.pollId })
 				.exec(function(err, pollToEdit) {
+					const pollData = req.body.pollData;
+
 					if (err) { next(err); }
+					else if (pollToEdit === null) {
+						next(new Error("Poll Not Found"));
+					}
 					else if (pollToEdit.creator.id !== req.user.github.id) {
 						res.status(403);
 						res.json({ status: 2, message: "You are not authorized to edit this poll" });
 					}
 					else {
-						req.body.options.forEach(function(option) {
+						pollData.options.forEach(function(option) {
 							option.numTimesSelected = 0;
 						});
-						pollToEdit.name = req.body.name;
-						pollToEdit.description = req.body.description;
-						pollToEdit.options = req.body.options;
+						pollToEdit.name = pollData.name;
+						pollToEdit.description = pollData.description;
+						pollToEdit.options = pollData.options;
 						pollToEdit.participants = [];
 
 
@@ -103,7 +116,7 @@ function PollHandler() {
 							}
 							else {
 								res.status(200);
-								res.json({ status: 0, message: "Poll Edit Successful" });
+								res.json({ pollId: updatedPoll._id });
 							}
 						});
 					}
@@ -115,31 +128,62 @@ function PollHandler() {
 		}
 	};
 
+	this.deletePoll = function(req, res, next) {
+		if (req.user) {
+			Poll.findOne({ '_id': req.body.pollId })
+				.exec(function(err, pollToEdit) {
+					if (err) { next(err); }
+					else if (pollToEdit === null) {
+						next(new Error("Poll Not Found"));
+					}
+					else if (pollToEdit.creator.id !== req.user.github.id) {
+						res.status(403);
+						res.json({ status: 2, message: "You are not authorized to edit this poll" });
+					}
+					else {
+						Poll.findOneAndRemove({ '_id': req.body.pollId }, function(err, updatedPoll) {
+							if (err) {
+								next(err);
+							}
+							else {
+								res.status(200);
+								res.json(updatedPoll);
+							}
+						});
+					}
+				});
+		}
+		else {
+			res.status(401);
+			next(new Error("Login Required to access"));
+		}
+	}
+
 	this.addPollOption = function(req, res, next) {
 		if (req.user) {
 			Poll.findOne({ '_id': req.body.pollId })
-			.exec(function(err, pollToEdit){
-				
-				if (err) { next(err); }
-				else{
-					const newOptionId = pollToEdit.options.length;
-					pollToEdit.options.push(new PollOption(newOptionId, req.body.optionText));
-					pollToEdit.save(function(err, result){
-						if(err){ next(err);}
-						else{
-							res.status(200);
-							res.json({ status: 0, message: "Poll Option Addition Successful", data: result });
-						}
-					});
-				}
-			});
+				.exec(function(err, pollToEdit) {
+
+					if (err) { next(err); }
+					else {
+						const newOptionId = pollToEdit.options.length;
+						pollToEdit.options.push(new PollOption(newOptionId, req.body.optionText));
+						pollToEdit.save(function(err, result) {
+							if (err) { next(err); }
+							else {
+								res.status(200);
+								res.json({ status: 0, message: "Poll Option Addition Successful", data: result });
+							}
+						});
+					}
+				});
 		}
 		else {
 			res.status(401);
 			next(new Error("Login Required to access"));
 		}
 	};
-	
+
 	this.voteOnPoll = function(req, res, next) {
 		var cookie = req.cookies.WillittFccVote;
 		Poll.findOne({ '_id': req.body.pollId },
@@ -147,7 +191,7 @@ function PollHandler() {
 				var selectedOption,
 					userVoted = false;
 				if (err || votingPoll == null) {
-					next( new Error(err || "Poll Not Found"));
+					next(new Error(err || "Poll Not Found"));
 				}
 				else {
 					if (req.user) {
@@ -165,7 +209,7 @@ function PollHandler() {
 						}
 						savePoll();
 					}
-					else if(cookie){
+					else if (cookie) {
 						votingPoll.participants.forEach(function(userInfo, index, participantArray) {
 							if (cookie.uuid === userInfo.uuid) {
 								userVoted = true;
@@ -180,7 +224,7 @@ function PollHandler() {
 						}
 						savePoll();
 					}
-					else{
+					else {
 						res.status(401);
 						next(new Error("Login Required To Access"));
 					}

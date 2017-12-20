@@ -36,11 +36,25 @@
                 });
             };
 
-            self.editPoll = function(pollObj) {
-                var requestData = pollObj;
+            self.editPoll = function(pollId, pollObj) {
+                var requestData = {
+                    "pollId": pollId,
+                    "pollData": pollObj
+                };
                 return $http({
                     method: "POST",
-                    url: "/addPoll",
+                    url: "/editPoll",
+                    data: requestData
+                });
+            };
+
+            self.deletePoll = function(pollId) {
+                var requestData = {
+                    "pollId": pollId,
+                };
+                return $http({
+                    method: "POST",
+                    url: "/deletePoll",
                     data: requestData
                 });
             };
