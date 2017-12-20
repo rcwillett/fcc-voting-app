@@ -77,6 +77,9 @@ module.exports = function(app, passport) {
 		
 	app.route('/editPoll')
 		.post(isLoggedIn, BodyParser.json(), pollHandler.editPoll, noCache);
+		
+	app.route('/deletePoll')
+		.post(isLoggedIn, BodyParser.json(), pollHandler.deletePoll);
 
 	app.route('/addPollOption')
 		.post(isLoggedIn, BodyParser.json(), pollHandler.addPollOption, noCache);

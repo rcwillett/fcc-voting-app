@@ -128,6 +128,37 @@ function PollHandler() {
 		}
 	};
 
+	this.deletePoll = function(req, res, next) {
+		if (req.user) {
+			Poll.findOne({ '_id': req.body.pollId })
+				.exec(function(err, pollToEdit) {
+					if (err) { next(err); }
+					else if (pollToEdit === null) {
+						next(new Error("Poll Not Found"));
+					}
+					else if (pollToEdit.creator.id !== req.user.github.id) {
+						res.status(403);
+						res.json({ status: 2, message: "You are not authorized to edit this poll" });
+					}
+					else {
+						Poll.findOneAndRemove({ '_id': req.body.pollId }, function(err, updatedPoll) {
+							if (err) {
+								next(err);
+							}
+							else {
+								res.status(200);
+								res.json(updatedPoll);
+							}
+						});
+					}
+				});
+		}
+		else {
+			res.status(401);
+			next(new Error("Login Required to access"));
+		}
+	}
+
 	this.addPollOption = function(req, res, next) {
 		if (req.user) {
 			Poll.findOne({ '_id': req.body.pollId })
