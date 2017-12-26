@@ -73,6 +73,282 @@
 }());
 (function() {
     angular.module("pollApp")
+        .service("chartService", function() {
+
+            return {
+                initBarChart: initBarChart,
+                initPieChart: initPieChart
+            };
+
+            function initBarChart(id, labels, votes) {
+                var ctx = document.getElementById(id).getContext('2d'),
+                    colours = [],
+                    myChart;
+
+                labels.forEach(function(item, index, labelArray) {
+                    colours.push(rainbow(labelArray.length, index));
+                });
+
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '# of Votes',
+                            data: votes,
+                            backgroundColor: colours,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                },
+                                label: '# of Votes'
+                            }]
+                        }
+                    },
+                    responsive: true
+                });
+            }
+
+            function initPieChart(id, labels, votes) {
+                var ctx = document.getElementById(id).getContext('2d'),
+                    colours = [],
+                    myChart;
+
+                labels.forEach(function(item, index, labelArray) {
+                    colours.push(rainbow(labelArray.length, index));
+                });
+
+                myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '# of Votes',
+                            data: votes,
+                            backgroundColor: colours,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+
+                    },
+                    responsive: true
+                });
+            }
+
+            function rainbow(numOfSteps, step) {
+                // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
+                // Adam Cole, 2011-Sept-14
+                // HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+                var r, g, b;
+                var h = step / numOfSteps;
+                var i = ~~(h * 6);
+                var f = h * 6 - i;
+                var q = 1 - f;
+                switch (i % 6) {
+                    case 0:
+                        r = 1;
+                        g = f;
+                        b = 0;
+                        break;
+                    case 1:
+                        r = q;
+                        g = 1;
+                        b = 0;
+                        break;
+                    case 2:
+                        r = 0;
+                        g = 1;
+                        b = f;
+                        break;
+                    case 3:
+                        r = 0;
+                        g = q;
+                        b = 1;
+                        break;
+                    case 4:
+                        r = f;
+                        g = 0;
+                        b = 1;
+                        break;
+                    case 5:
+                        r = 1;
+                        g = 0;
+                        b = q;
+                        break;
+                }
+                var c = "#" + ("00" + (~~(r * 255)).toString(16)).slice(-2) + ("00" + (~~(g * 255)).toString(16)).slice(-2) + ("00" + (~~(b * 255)).toString(16)).slice(-2);
+                return (c);
+            }
+        });
+}());
+(function() {
+    angular.module("pollApp")
+        .service("loginService", ["$rootScope", "$http", function($rootScope, $http) {
+            var self = this;
+
+            self.login = login;
+
+            self.logout = logout;
+
+            self.isLoggedIn = isLoggedIn;
+
+            function login() {
+                return $http.get("/auth/github");
+            }
+
+            function logout() {
+                return $http.get("/logout");
+            }
+
+            function isLoggedIn() {
+                return $http.get("/isLoggedIn");
+            }
+
+            return self;
+        }]);
+}());
+(function(){
+    angular.module("pollApp")
+    .service("notificationService", ["toastr", function(toastr){
+        return {
+          success: successFunction,
+          error: errorFunction,
+          warn: warnFunction
+        };
+        
+        function successFunction(msg){
+            toastr.success(msg);
+        }
+        
+        function errorFunction(msg){
+            toastr.error(msg);
+        }
+        
+        function warnFunction(msg){
+            toastr.warning(msg);
+        }
+        
+    }]);
+}());
+(function() {
+    angular.module("pollApp")
+        .service("pollService", ["$http", function($http) {
+            var self = this;
+
+            self.getPoll = function(id) {
+                var url = "/poll/" + id;
+                return $http({
+                    method: "GET",
+                    url: url
+                });
+            };
+
+            self.getPolls = function(numItems) {
+                var requestObj = { "numItems": numItems };
+                return $http({
+                    method: "GET",
+                    url: "/polls",
+                    params: requestObj
+                });
+            };
+
+            self.getUserPolls = function(userId) {
+                return $http({
+                    method: "GET",
+                    url: "/userPolls"
+                });
+            };
+
+            self.createPoll = function(pollObj) {
+                var requestData = pollObj;
+                return $http({
+                    method: "POST",
+                    url: "/addPoll",
+                    data: requestData
+                });
+            };
+
+            self.editPoll = function(pollId, pollObj) {
+                var requestData = {
+                    "pollId": pollId,
+                    "pollData": pollObj
+                };
+                return $http({
+                    method: "POST",
+                    url: "/editPoll",
+                    data: requestData
+                });
+            };
+
+            self.deletePoll = function(pollId) {
+                var requestData = {
+                    "pollId": pollId,
+                };
+                return $http({
+                    method: "POST",
+                    url: "/deletePoll",
+                    data: requestData
+                });
+            };
+
+            self.addPollOption = function(pollId, optionText) {
+                var requestData = {
+                    "pollId": pollId,
+                    "optionText": optionText
+                };
+
+                return $http({
+                    method: "POST",
+                    url: "/addPollOption",
+                    data: requestData,
+                    type: "application/json"
+                });
+            }
+
+            self.vote = function(pollId, optionId) {
+                var requestData = {
+                    "pollId": pollId,
+                    "optionId": optionId
+                };
+                return $http({
+                    method: "POST",
+                    url: "/vote",
+                    data: requestData,
+                    type: "application/json"
+                });
+            };
+
+            return self;
+        }]);
+}());
+
+(function() {
+    angular.module("pollApp")
+        .service("userService", ["$http", function($http) {
+            var self = this;
+
+            self.getUserInfo = getUserInfo;
+
+            function getUserInfo() {
+                var url = "/getUserInfo";
+                return $http({
+                    method: "GET",
+                    url: url
+                });
+            }
+
+            return self;
+        }]);
+}());
+
+(function() {
+    angular.module("pollApp")
         .controller("createEditPollController", ["$scope", "$timeout", "$route", "$routeParams", "OptionModel", "PollModel", "pollService", "appConstants", "notificationService", createEditPollController]);
 
     function createEditPollController($scope, $timeout, $route, $routeParams, OptionModel, PollModel, pollService, appConstants, notificationService) {
@@ -252,7 +528,7 @@
 
 (function() {
     angular.module("pollApp")
-        .controller("pollStatsController", ["$routeParams", "$scope", "$timeout", "pollService", function($routeParams, $scope, $timeout, pollService) {
+        .controller("pollStatsController", ["$routeParams", "$scope", "$timeout", "chartService", "pollService", function($routeParams, $scope, $timeout, chartService, pollService) {
             $scope.vm = {};
             var vm = $scope.vm;
             vm.unexpectedError = false;
@@ -263,15 +539,13 @@
                         vm.poll = serverResp.data.pollInfo;
                         var optionNames = [];
                         var optionVotes = [];
-                        var optionColors = [];
+
                         vm.poll.options.forEach(function(option, index, optionArray) {
                             optionNames.push(option.optionText);
                             optionVotes.push(option.numTimesSelected);
-                            optionColors.push(rainbow(optionArray.length, index));
                         });
-                        initBarChart(optionNames, optionVotes, optionColors);
-                        initPieChart(optionNames, optionVotes, optionColors);
-                        $timeout(function() { $scope.$apply(); });
+                        chartService.initBarChart("bar-chart-results", optionNames, optionVotes);
+                        chartService.initPieChart("pie-chart-results", optionNames, optionVotes);
                     },
                     function(serverResp) {
                         vm.unexpectedError = true;
@@ -282,104 +556,12 @@
                 window.location.href = "/404";
             }
 
-            function initBarChart(labels, votes, colours) {
-                var ctx = document.getElementById("bar-chart-results").getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: '# of Votes',
-                            data: votes,
-                            backgroundColor: colours,
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true
-                                },
-                                label: '# of Votes'
-                            }]
-                        }
-                    },
-                    responsive: true
-                });
-            }
-
-            function initPieChart(labels, votes, colours) {
-                var ctx = document.getElementById("pie-chart-results").getContext('2d');
-                var myChart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: '# of Votes',
-                            data: votes,
-                            backgroundColor: colours,
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-
-                    },
-                    responsive: true
-                });
-            }
-
-            function rainbow(numOfSteps, step) {
-                // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
-                // Adam Cole, 2011-Sept-14
-                // HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
-                var r, g, b;
-                var h = step / numOfSteps;
-                var i = ~~(h * 6);
-                var f = h * 6 - i;
-                var q = 1 - f;
-                switch (i % 6) {
-                    case 0:
-                        r = 1;
-                        g = f;
-                        b = 0;
-                        break;
-                    case 1:
-                        r = q;
-                        g = 1;
-                        b = 0;
-                        break;
-                    case 2:
-                        r = 0;
-                        g = 1;
-                        b = f;
-                        break;
-                    case 3:
-                        r = 0;
-                        g = q;
-                        b = 1;
-                        break;
-                    case 4:
-                        r = f;
-                        g = 0;
-                        b = 1;
-                        break;
-                    case 5:
-                        r = 1;
-                        g = 0;
-                        b = q;
-                        break;
-                }
-                var c = "#" + ("00" + (~~(r * 255)).toString(16)).slice(-2) + ("00" + (~~(g * 255)).toString(16)).slice(-2) + ("00" + (~~(b * 255)).toString(16)).slice(-2);
-                return (c);
-            }
-
         }]);
 }());
 
 (function() {
     angular.module("pollApp")
-        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "pollService", "notificationService", function($routeParams, $scope, $rootScope, $timeout, pollService, notificationService) {
+        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "chartService", "pollService", "notificationService", function($routeParams, $scope, $rootScope, $timeout, chartService, pollService, notificationService) {
             $scope.vm = {};
 
             var vm = $scope.vm;
@@ -406,12 +588,21 @@
             }
 
             function getPollSuccess(serverResp) {
+                var optionNames = serverResp.data.pollInfo.options.map(function(option){
+                    return option.optionText;
+                }),
+                optionVotes = serverResp.data.pollInfo.options.map(function(option){
+                    return option.numTimesSelected;
+                });;
+                
                 vm.poll = serverResp.data.pollInfo;
                 vm.selectedOption = serverResp.data.userSelection ? vm.poll.options[serverResp.data.userSelection] : vm.poll.options[0];
                 vm.facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?u=' + window.encodeURI(window.location.href);
                 vm.twitterShareLink = 'https://twitter.com/home?status=' + window.encodeURI(window.location.href);
+                
+                chartService.initPieChart("pie-chart-results", optionNames, optionVotes);
             }
-
+            
             function submitSelection() {
                 pollService.vote($routeParams.pollId, vm.selectedOption.optionId)
                     .then(function(resp) {
@@ -497,166 +688,6 @@
                 return '#!pollStats/' + pollId;
             }
 
-        }]);
-}());
-
-(function() {
-    angular.module("pollApp")
-        .service("loginService", ["$rootScope", "$http", function($rootScope, $http) {
-            var self = this;
-
-            self.login = login;
-
-            self.logout = logout;
-
-            self.isLoggedIn = isLoggedIn;
-
-            function login() {
-                return $http.get("/auth/github");
-            }
-
-            function logout() {
-                return $http.get("/logout");
-            }
-
-            function isLoggedIn() {
-                return $http.get("/isLoggedIn");
-            }
-
-            return self;
-        }]);
-}());
-(function(){
-    angular.module("pollApp")
-    .service("notificationService", ["toastr", function(toastr){
-        return {
-          success: successFunction,
-          error: errorFunction,
-          warn: warnFunction
-        };
-        
-        function successFunction(msg){
-            toastr.success(msg);
-        }
-        
-        function errorFunction(msg){
-            toastr.error(msg);
-        }
-        
-        function warnFunction(msg){
-            toastr.warning(msg);
-        }
-        
-    }]);
-}());
-(function() {
-    angular.module("pollApp")
-        .service("pollService", ["$http", function($http) {
-            var self = this;
-
-            self.getPoll = function(id) {
-                var url = "/poll/" + id;
-                return $http({
-                    method: "GET",
-                    url: url
-                });
-            };
-
-            self.getPolls = function(numItems) {
-                var requestObj = { "numItems": numItems };
-                return $http({
-                    method: "GET",
-                    url: "/polls",
-                    params: requestObj
-                });
-            };
-
-            self.getUserPolls = function(userId) {
-                return $http({
-                    method: "GET",
-                    url: "/userPolls"
-                });
-            };
-
-            self.createPoll = function(pollObj) {
-                var requestData = pollObj;
-                return $http({
-                    method: "POST",
-                    url: "/addPoll",
-                    data: requestData
-                });
-            };
-
-            self.editPoll = function(pollId, pollObj) {
-                var requestData = {
-                    "pollId": pollId,
-                    "pollData": pollObj
-                };
-                return $http({
-                    method: "POST",
-                    url: "/editPoll",
-                    data: requestData
-                });
-            };
-
-            self.deletePoll = function(pollId) {
-                var requestData = {
-                    "pollId": pollId,
-                };
-                return $http({
-                    method: "POST",
-                    url: "/deletePoll",
-                    data: requestData
-                });
-            };
-
-            self.addPollOption = function(pollId, optionText) {
-                var requestData = {
-                    "pollId": pollId,
-                    "optionText": optionText
-                };
-
-                return $http({
-                    method: "POST",
-                    url: "/addPollOption",
-                    data: requestData,
-                    type: "application/json"
-                });
-            }
-
-            self.vote = function(pollId, optionId) {
-                var requestData = {
-                    "pollId": pollId,
-                    "optionId": optionId
-                };
-                return $http({
-                    method: "POST",
-                    url: "/vote",
-                    data: requestData,
-                    type: "application/json"
-                });
-            };
-
-            return self;
-        }]);
-}());
-
-(function() {
-    angular.module("pollApp")
-        .service("userService", ["$http", function($http) {
-            var self = this;
-
-            self.getUserInfo = getUserInfo;
-
-            function getUserInfo() {
-                var url = "/getUserInfo";
-                return $http({
-                    method: "GET",
-                    url: url
-                });
-            }
-
-            return self;
         }]);
 }());
 
