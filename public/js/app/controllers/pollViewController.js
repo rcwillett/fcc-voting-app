@@ -1,6 +1,6 @@
 (function() {
     angular.module("pollApp")
-        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "pollService", "notificationService", function($routeParams, $scope, $rootScope, $timeout, pollService, notificationService) {
+        .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "chartService", "pollService", "notificationService", function($routeParams, $scope, $rootScope, $timeout, chartService, pollService, notificationService) {
             $scope.vm = {};
 
             var vm = $scope.vm;
@@ -27,12 +27,21 @@
             }
 
             function getPollSuccess(serverResp) {
+                var optionNames = serverResp.data.pollInfo.options.map(function(option){
+                    return option.optionText;
+                }),
+                optionVotes = serverResp.data.pollInfo.options.map(function(option){
+                    return option.numTimesSelected;
+                });;
+                
                 vm.poll = serverResp.data.pollInfo;
                 vm.selectedOption = serverResp.data.userSelection ? vm.poll.options[serverResp.data.userSelection] : vm.poll.options[0];
                 vm.facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?u=' + window.encodeURI(window.location.href);
                 vm.twitterShareLink = 'https://twitter.com/home?status=' + window.encodeURI(window.location.href);
+                
+                chartService.initPieChart("pie-chart-results", optionNames, optionVotes);
             }
-
+            
             function submitSelection() {
                 pollService.vote($routeParams.pollId, vm.selectedOption.optionId)
                     .then(function(resp) {

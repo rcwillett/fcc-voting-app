@@ -21,11 +21,10 @@ function PollHandler() {
 								userSelection: null,
 								pollInfo: aliasedPoll
 							};
-						var selectArray = result.participants.filter(function(participant) {
-							return participant.userId == req.user.github.id
-						});
 						if (req.user) {
-
+							var selectArray = result.participants.filter(function(participant) {
+								return participant.userId == req.user.github.id
+							});
 							response.userSelection = selectArray.length > 0 ? selectArray[0].optionId : null;
 						}
 						res.json(response);
