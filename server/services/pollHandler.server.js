@@ -206,7 +206,7 @@ function PollHandler() {
 							adjustOption(votingPoll.options, req.body.optionId, 1);
 							votingPoll.participants.push(new userSelection(req.user.github.id, "", req.body.optionId));
 						}
-						savePoll();
+						savePoll(userVoted);
 					}
 					else if (cookie) {
 						votingPoll.participants.forEach(function(userInfo, index, participantArray) {
@@ -221,7 +221,7 @@ function PollHandler() {
 							adjustOption(votingPoll.options, req.body.optionId, 1);
 							votingPoll.participants.push(new userSelection("", cookie.uuid, req.body.optionId));
 						}
-						savePoll();
+						savePoll(userVoted);
 					}
 					else {
 						res.status(401);
@@ -229,15 +229,19 @@ function PollHandler() {
 					}
 				}
 
-				function savePoll() {
+				function savePoll(userVoted) {
 					votingPoll.save(function(err, updatedPoll) {
 						if (err) {
 							next(new Error(err));
 						}
 						else {
-							var aliasedResult = new PollModel(updatedPoll.name, updatedPoll.description, updatedPoll.creator.id, updatedPoll.creator.userName, updatedPoll.options);
+							var aliasedResult = new PollModel(updatedPoll.name, updatedPoll.description, updatedPoll.creator.id, updatedPoll.creator.userName, updatedPoll.options),
+							result = {
+								userVoted: userVoted,
+								pollInfo: aliasedResult
+							};
 							res.status(200);
-							res.json(updatedPoll);
+							res.json(result);
 						}
 					});
 				}

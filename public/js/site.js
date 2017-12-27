@@ -334,8 +334,13 @@
             }
 
             function voteSuccess(resp) {
-                resetChart(resp.data);
-                notificationService.success("Vote Successful!");
+                resetChart(resp.data.pollInfo);
+                if(resp.data.userVoted){
+                    notificationService.success("Vote Changed to " + vm.selectedOption.optionText);
+                }
+                else{
+                    notificationService.success("Vote Successful!");
+                }
             }
 
 
