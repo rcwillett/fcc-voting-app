@@ -28,6 +28,10 @@ The data layer of this application uses mongoDB as its NoSQL database
 
 The front end has been built as a SPA using the Bootstrap (version 4) library with jQuery and angular.js (version 1). The Gulp task runner is used to minify and bundle files for the front end.
 
+## Utilities
+
+For this solution, npm is used for managing the packages used on both the front and back end.
+
 ## Licenses
 
 ### Clementine.js FCC Boilerplate License
