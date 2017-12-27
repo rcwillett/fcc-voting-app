@@ -1,6 +1,6 @@
 (function() {
     angular.module("pollApp")
-        .controller("loginController", ["$scope", "$rootScope", "$routeParams", "loginService", function($scope, $rootScope, $routeParams, loginService) {
+        .controller("loginController", ["$scope", "$rootScope", "$route", "$routeParams", "loginService", function($scope, $rootScope, $route, $routeParams, loginService) {
             $scope.vm = {};
             var vm = $scope.vm;
             vm.logInWithGit = logInWithGit;
@@ -12,8 +12,7 @@
             }
 
             function loginSuccess(resp) {
-                $rootScope.loggedIn = true;
-                window.location.href = "/";
+                //This is effectively never hit
             }
 
             function loginFail(resp) {
