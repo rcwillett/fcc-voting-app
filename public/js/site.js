@@ -287,7 +287,9 @@
         .controller("pollViewController", ["$routeParams", "$scope", "$rootScope", "$timeout", "chartService", "pollService", "notificationService", function($routeParams, $scope, $rootScope, $timeout, chartService, pollService, notificationService) {
             $scope.vm = {};
 
-            var vm = $scope.vm;
+            var vm = $scope.vm,
+                pieChart,
+                pieChartSelector = "pie-chart-results";
 
             initViewModel();
 
@@ -311,27 +313,31 @@
             }
 
             function getPollSuccess(serverResp) {
-                var optionNames = serverResp.data.pollInfo.options.map(function(option){
-                    return option.optionText;
-                }),
-                optionVotes = serverResp.data.pollInfo.options.map(function(option){
-                    return option.numTimesSelected;
-                });;
-                
+                var optionNames = serverResp.data.pollInfo.options.map(function(option) {
+                        return option.optionText;
+                    }),
+                    optionVotes = serverResp.data.pollInfo.options.map(function(option) {
+                        return option.numTimesSelected;
+                    });;
+
                 vm.poll = serverResp.data.pollInfo;
                 vm.selectedOption = serverResp.data.userSelection ? vm.poll.options[serverResp.data.userSelection] : vm.poll.options[0];
                 vm.facebookShareLink = 'https://www.facebook.com/sharer/sharer.php?u=' + window.encodeURI(window.location.href);
                 vm.twitterShareLink = 'https://twitter.com/home?status=' + window.encodeURI(window.location.href);
-                
-                chartService.initPieChart("pie-chart-results", optionNames, optionVotes);
+
+                pieChart = chartService.initPieChart(pieChartSelector, optionNames, optionVotes);
             }
-            
+
             function submitSelection() {
                 pollService.vote($routeParams.pollId, vm.selectedOption.optionId)
-                    .then(function(resp) {
-                        notificationService.success("Option Selection Successful");
-                    });
+                    .then(voteSuccess, requestFailure);
             }
+
+            function voteSuccess(resp) {
+                resetChart(resp.data);
+                notificationService.success("Vote Successful!");
+            }
+
 
             function submitNewOption() {
                 if (!$scope.newOptionForm.newPollOption.$error.required && !$scope.newOptionForm.newPollOption.$error.pattern) {
@@ -343,6 +349,7 @@
                 vm.newOptionFormVisible = false;
                 vm.addNewOptionVisible = false;
                 vm.poll = resp.data.data;
+                resetChart(resp.data.data);
                 notificationService.success("New Option Added");
             }
 
@@ -359,6 +366,21 @@
 
             function requestFailure(resp) {
                 notificationService.error(resp.message);
+            }
+
+            function resetChart(pollData) {
+                pieChart.destroy();
+                initChart(pollData);
+            }
+
+            function initChart(pollData){
+                                var optionNames = pollData.options.map(function(option) {
+                        return option.optionText;
+                    }),
+                    optionVotes = pollData.options.map(function(option) {
+                        return option.numTimesSelected;
+                    });;
+                    chartService.initPieChart(pieChartSelector, optionNames, optionVotes);
             }
 
         }]);
@@ -425,14 +447,13 @@
 
             function initBarChart(id, labels, votes) {
                 var ctx = document.getElementById(id).getContext('2d'),
-                    colours = [],
-                    myChart;
+                    colours = [];
 
                 labels.forEach(function(item, index, labelArray) {
                     colours.push(rainbow(labelArray.length, index));
                 });
 
-                myChart = new Chart(ctx, {
+                return new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: labels,
@@ -459,14 +480,13 @@
 
             function initPieChart(id, labels, votes) {
                 var ctx = document.getElementById(id).getContext('2d'),
-                    colours = [],
-                    myChart;
+                    colours = [];
 
                 labels.forEach(function(item, index, labelArray) {
                     colours.push(rainbow(labelArray.length, index));
                 });
 
-                myChart = new Chart(ctx, {
+                return new Chart(ctx, {
                     type: 'pie',
                     data: {
                         labels: labels,

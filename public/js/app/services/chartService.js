@@ -9,14 +9,13 @@
 
             function initBarChart(id, labels, votes) {
                 var ctx = document.getElementById(id).getContext('2d'),
-                    colours = [],
-                    myChart;
+                    colours = [];
 
                 labels.forEach(function(item, index, labelArray) {
                     colours.push(rainbow(labelArray.length, index));
                 });
 
-                myChart = new Chart(ctx, {
+                return new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: labels,
@@ -43,14 +42,13 @@
 
             function initPieChart(id, labels, votes) {
                 var ctx = document.getElementById(id).getContext('2d'),
-                    colours = [],
-                    myChart;
+                    colours = [];
 
                 labels.forEach(function(item, index, labelArray) {
                     colours.push(rainbow(labelArray.length, index));
                 });
 
-                myChart = new Chart(ctx, {
+                return new Chart(ctx, {
                     type: 'pie',
                     data: {
                         labels: labels,
