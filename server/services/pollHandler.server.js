@@ -250,9 +250,9 @@ function PollHandler() {
 	};
 
 	function adjustOption(pollOptions, selectedId, adjustment) {
-		for (var i = 0; i < pollOptions.length; i++) {
-			if (pollOptions[i].optionId === selectedId) {
-				pollOptions[i].numTimesSelected += adjustment;
+		for (let pollOption of pollOptions) {
+			if (pollOption.optionId === selectedId) {
+				pollOption.numTimesSelected += adjustment;
 				return;
 			}
 		}
